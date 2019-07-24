@@ -41,18 +41,29 @@ AZinxHandler * ExitFrame::GetNextHandler(IZinxMsg & _oNextMsg)
 
 IZinxMsg * Cmd::InternelHandle(IZinxMsg & _oInput)
 {
-	GET_REF2DATA(BytesMsg, byte, _oInput);
+	GET_REF2DATA(BytesMsg, byte, _oInput); 
 	return new BytesMsg(byte);
 }
 
 AZinxHandler * Cmd::GetNextHandler(IZinxMsg & _oNextMsg)
 {
 	GET_REF2DATA(BytesMsg, byte, _oNextMsg);
-	if ("exit" == byte.szData)return &g_exit;
-	else if ("open" == byte.szData ||
-		"close" == byte.szData)return &g_omng;
-	else return &g_echo;
+	//if (nullptr == cmds[byte.szData])return &g_echo;
+	if (cmds.end() == cmds.find(byte.szData))return &g_echo;
+	else return cmds[byte.szData];
 }
+
+void Cmd::add_handle(const string & s, AZinxHandler * h)
+{
+	cmds[s] = h;
+}
+
+//Cmd::Cmd()
+//{
+//	cmds["exit"] = &g_exit;
+//	cmds["open"] = &g_omng;
+//	cmds["close"] = &g_omng;
+//}
 
 IZinxMsg * OMng::InternelHandle(IZinxMsg & _oInput)
 {

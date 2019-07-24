@@ -15,6 +15,9 @@ int main()
 	//2.2.创建数据处理类ExitFrame-->继承类AZinxHandler
 	//2.3.创建数据处理类Cmd-->继承类AZinxHandler
 	//	2.3.1.在命令管理类Cmd里添加一个map，将命令放进去
+	g_cmd.add_handle("exit", &g_exit);
+	g_cmd.add_handle("open", &g_omng);
+	g_cmd.add_handle("close", &g_omng);
 	//2.4.创建数据处理类OMng-->继承类AZinxHandler
 
 	//3.1.创建IO通道类stdin_channel-->继承Ichannel

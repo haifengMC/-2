@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <zinx.h>
+#include <map>
 
 using namespace std;
 
@@ -25,9 +26,13 @@ extern ExitFrame g_exit;
 //2.3.创建数据处理类Cmd-->继承类AZinxHandler
 class Cmd : public AZinxHandler
 {
+	map<string, AZinxHandler*> cmds;
 	// 通过 AZinxHandler 继承
 	virtual IZinxMsg * InternelHandle(IZinxMsg & _oInput) override;
 	virtual AZinxHandler * GetNextHandler(IZinxMsg & _oNextMsg) override;
+public:
+	//Cmd();
+	void add_handle(const string& s, AZinxHandler* h);
 };
 extern Cmd g_cmd;
 
