@@ -53,7 +53,7 @@ int main()
 		delete(p_exitR);
 		delete(p_oMngR);
 		//5.ÊÍ·ÅºËÐÄ
-		ZinxKernel::Zinx_Exit();
+		ZinxKernel::ZinxKernelFini();
 	}
 
 	return 0;
