@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{6e625be0-b165-4dc9-8f1b-fd24726d0e9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{e3a1adf4-1495-43a7-8309-d1012502aa01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\channel">
+      <UniqueIdentifier>{5545b0f2-03ef-4a68-87a6-0523ee1e3d54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\role">
+      <UniqueIdentifier>{14b22d1a-ca02-4b3e-b68a-d28df8382b88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\role">
+      <UniqueIdentifier>{81e60d83-9592-46ac-aed8-d350d3828f80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\protocol">
+      <UniqueIdentifier>{df9e20bf-f27f-4f83-ac27-4878bd3b9c39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\protocol">
+      <UniqueIdentifier>{f9f76937-67d5-4cc9-aa4e-e1b3cc8fa316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\channel">
+      <UniqueIdentifier>{3f4ce7ba-3475-426d-ac74-8c9cd4acb981}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\channel\StdinC.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\channel\StdoutC.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\CmdPrsP.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\role\EchoR.h">
+      <Filter>inc\role</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\role\ExitR.h">
+      <Filter>inc\role</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\role\OMngR.h">
+      <Filter>inc\role</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\CmdMsg.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\channel\StdinC.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\channel\StdoutC.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\CmdPrsP.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\role\EchoR.cpp">
+      <Filter>src\role</Filter>
+    </ClCompile>
+    <ClCompile Include="src\role\ExitR.cpp">
+      <Filter>src\role</Filter>
+    </ClCompile>
+    <ClCompile Include="src\role\OMngR.cpp">
+      <Filter>src\role</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CmdMsg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+</Project>
