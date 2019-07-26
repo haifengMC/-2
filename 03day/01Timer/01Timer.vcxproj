@@ -87,6 +87,7 @@
     <ClCompile Include="src\CmdMsg.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\protocol\CmdPrsP.cpp" />
+    <ClCompile Include="src\protocol\TimeoutP.cpp" />
     <ClCompile Include="src\role\EchoR.cpp" />
     <ClCompile Include="src\role\ExitR.cpp" />
     <ClCompile Include="src\role\OMngR.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="inc\channel\TimeoutC.h" />
     <ClInclude Include="inc\CmdMsg.h" />
     <ClInclude Include="inc\protocol\CmdPrsP.h" />
+    <ClInclude Include="inc\protocol\TimeoutP.h" />
     <ClInclude Include="inc\role\EchoR.h" />
     <ClInclude Include="inc\role\ExitR.h" />
     <ClInclude Include="inc\role\OMngR.h" />

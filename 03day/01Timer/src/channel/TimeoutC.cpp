@@ -1,5 +1,6 @@
 #include "../../inc/channel/TimeoutC.h"
 #include "../../inc/protocol/CmdPrsP.h"
+#include "../../inc/protocol/TimeoutP.h"
 #include "sys/timerfd.h"
 
 
@@ -37,7 +38,7 @@ bool TimeoutC::ReadFd(std::string & _input)
 	if (sizeof(buf) ==
 		read(timerfd, buf, sizeof(buf)))
 	{
-		_input.append(buf, sizeof(buf);
+		_input.append(buf, sizeof(buf));
 		return true;
 	}
 	return false;
@@ -69,5 +70,5 @@ std::string TimeoutC::GetChannelInfo()
 
 AZinxHandler * TimeoutC::GetInputNextStage(BytesMsg & _oInput)
 {
-	return &CmdPrsP::getInstance();
+	return &TimeoutP::getInstance();
 }

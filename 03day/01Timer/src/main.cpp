@@ -7,7 +7,9 @@
 
 #include "../inc/channel/StdinC.h"
 #include "../inc/channel/StdoutC.h"
+#include "../inc/channel/TimeoutC.h"
 #include "../inc/protocol/CmdPrsP.h"
+#include "../inc/protocol/TimeoutP.h"
 #include "../inc/role/EchoR.h"
 #include "../inc/role/ExitR.h"
 #include "../inc/role/OMngR.h"
@@ -20,10 +22,13 @@ int main()
 		//2.1.添加通道
 		Ichannel* p_stdinC = new StdinC;
 		Ichannel* p_stdoutC = new StdoutC;
+		Ichannel* p_timeoutC = new TimeoutC;
 		ZinxKernel::Zinx_Add_Channel(*p_stdinC);
 		ZinxKernel::Zinx_Add_Channel(*p_stdoutC);
+		ZinxKernel::Zinx_Add_Channel(*p_timeoutC);
 		//2.2.添加协议
 		ZinxKernel::Zinx_Add_Proto(CmdPrsP::getInstance());
+		ZinxKernel::Zinx_Add_Proto(TimeoutP::getInstance());
 		//2.3.添加角色
 		Irole* p_echoR = new EchoR;
 		Irole* p_exitR = new ExitR;
@@ -41,10 +46,13 @@ int main()
 		//4.1.摘除通道
 		ZinxKernel::Zinx_Del_Channel(*p_stdinC);
 		ZinxKernel::Zinx_Del_Channel(*p_stdoutC);
+		ZinxKernel::Zinx_Del_Channel(*p_timeoutC);
 		delete(p_stdinC);
 		delete(p_stdoutC);
+		delete(p_timeoutC);
 		//4.2.摘除协议
 		ZinxKernel::Zinx_Del_Proto(CmdPrsP::getInstance());
+		ZinxKernel::Zinx_Del_Proto(TimeoutP::getInstance());
 		//4.3.摘除角色
 		ZinxKernel::Zinx_Del_Role(*p_echoR);
 		ZinxKernel::Zinx_Del_Role(*p_exitR);

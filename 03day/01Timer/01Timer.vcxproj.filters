@@ -54,6 +54,9 @@
     <ClCompile Include="src\channel\TimeoutC.cpp">
       <Filter>src\channel</Filter>
     </ClCompile>
+    <ClCompile Include="src\protocol\TimeoutP.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\channel\StdinC.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="inc\channel\TimeoutC.h">
       <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\TimeoutP.h">
+      <Filter>inc\protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
