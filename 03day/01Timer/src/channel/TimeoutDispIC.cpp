@@ -32,7 +32,7 @@ bool TimeoutDispIC::ReadFd(std::string & _input)
 	//printf("%d\n", read(fd, ch_i, sizeof(ch_i)));
 	if (-1 == read(fd, ch_i, sizeof(ch_i))) return false;
 
-	_input = ch_i;
+	_input.append(ch_i, sizeof(ch_i));
 
 	return true;
 }

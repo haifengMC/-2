@@ -66,7 +66,7 @@ UserData * TimeoutP::raw2request(std::string _szInput)
 				{
 					char buf[sizeof(TimeoutTaskR*)];
 					memcpy(buf, &tt, sizeof(TimeoutTaskR*));
-					std::string str(buf);
+					std::string str(buf, sizeof(buf));
 					
 					Ichannel* ch = ZinxKernel::
 						Zinx_GetChannel_ByInfo("timeout_dispO_channel");

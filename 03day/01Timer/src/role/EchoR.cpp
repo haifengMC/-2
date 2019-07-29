@@ -1,6 +1,6 @@
 #include "../../inc/role/EchoR.h"
 #include "../../inc/protocol/CmdPrsP.h"
-#include "../../inc/CmdMsg.h"
+#include "../../inc/protocol/CmdMsg.h"
 
 
 EchoR::EchoR()
