@@ -1,4 +1,4 @@
-#include "../inc/CmdMsg.h"
+#include "../../inc/protocol/CmdMsg.h"
 
 
 

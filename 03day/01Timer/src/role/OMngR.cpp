@@ -1,5 +1,5 @@
 #include "../../inc/role/OMngR.h"
-#include "../../inc/CmdMsg.h"
+#include "../../inc/protocol/CmdMsg.h"
 
 
 OMngR::OMngR()

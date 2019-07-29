@@ -4,7 +4,7 @@
 #include "../../inc/role/EchoR.h"
 #include "../../inc/role/ExitR.h"
 #include "../../inc/role/OMngR.h"
-#include "../../inc/CmdMsg.h"
+#include "../../inc/protocol/CmdMsg.h"
 
 CmdPrsP::CmdPrsP()
 {
