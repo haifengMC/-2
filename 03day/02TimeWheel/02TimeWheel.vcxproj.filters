@@ -110,5 +110,8 @@
     <ClCompile Include="src\protocol\TimeoutDisprP.cpp">
       <Filter>src\protocol</Filter>
     </ClCompile>
+    <ClCompile Include="src\protocol\TimeoutP.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
