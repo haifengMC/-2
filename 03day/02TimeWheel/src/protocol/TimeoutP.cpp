@@ -2,7 +2,7 @@
 #include "../../inc/protocol/TimeoutP.h"
 #include "../../inc/protocol/TimeoutDisprP.h"
 
-#define D(X) std::cout << X << ", " << __LINE__ << endl;
+#define D(X) std::cout << #X", " << X << ", " << __LINE__ << endl;
 
 TimeoutP::TimeoutP()
 {
@@ -135,34 +135,53 @@ UserData * TimeoutP::raw2request(std::string _szInput)
 	s_oldScale = s_timeWheelScale;
 	s_timeWheelScale += *(uint64_t*)_szInput.data();
 
-	for (int i = 0; i < s_timeWheelScale - s_oldScale; i++)
+	int scale = s_timeWheelScale % TIME_WHEEL_LEN;
+
+
+	for (int i = s_timeWheelScale - s_oldScale - 1; i >= 0; i--)
 	{
-		for (list<map<int, TaskData_List>*>& scale_list : s_timeWheel)
+		cout << "s_timeWheel";
+		for (auto scale_list : s_timeWheel)
 		{
-			if (scale_list.empty())continue;
-			for (map<int, TaskData_List>*& ptask_map : scale_list)
+			cout << !scale_list.empty() << " ";
+		}
+		cout << endl;
+
+		list<map<int, TaskData_List>*>& scale_list = s_timeWheel[scale - i];
+		if (scale_list.empty())continue;
+
+		cout << "scale_list";
+		for (auto ptask_map : scale_list)
+		{
+			cout << ptask_map << " ";
+		}
+		cout << endl;
+		for (map<int, TaskData_List>*& ptask_map : scale_list)
+		{
+			if (NULL == ptask_map)continue;
+			if ((void*)0x1 == ptask_map)continue;
+			for (pair<const int, TaskData_List>& tdl_pair : *ptask_map)
 			{
-				if (NULL == ptask_map)continue;
-				for (pair<const int, TaskData_List>& tdl_pair : *ptask_map)
+				for (_TaskData* td : tdl_pair.second)
 				{
-					for (_TaskData* td : tdl_pair.second)
+					for (const TimeoutTaskR*& ppt : td->task_list)
 					{
-						for (const TimeoutTaskR*& ppt : td->task_list)
-						{
-							char buf[sizeof(TimeoutTaskR*)];
-							memcpy(buf, &ppt, sizeof(TimeoutTaskR*));
-							std::string str(buf, sizeof(buf));
+						D(ppt->getTaskName());
+						char buf[sizeof(TimeoutTaskR*)];
+						memcpy(buf, &ppt, sizeof(TimeoutTaskR*));
+						std::string str(buf, sizeof(buf));
 
-							Ichannel* ch = ZinxKernel::
-								Zinx_GetChannel_ByInfo("timeout_dispO_channel");
+						Ichannel* ch = ZinxKernel::
+							Zinx_GetChannel_ByInfo("timeout_dispO_channel");
 
-							ZinxKernel::Zinx_SendOut(str, *ch);
-						}
-
+						ZinxKernel::Zinx_SendOut(str, *ch);
 					}
-		
+
 				}
+
 			}
+
+			updataTaskMap(ptask_map, scale_list);
 		}
 	}
 	return nullptr;
@@ -233,5 +252,18 @@ void TimeoutP::insertNewMap(
 
 
 	scale_list.push_back(ptask_map);
+}
+
+void TimeoutP::updataTaskMap(
+	map<int, TaskData_List>*& tdl_map,
+	list<map<int, TaskData_List>*>&  scale_list)
+{
+	int key = tdl_map->begin()->first;
+	int scale = (s_timeWheelScale + key) % TIME_WHEEL_LEN;
+	int count = (s_timeWheelScale + key) / TIME_WHEEL_LEN;
+
+	scale_list.remove(tdl_map);
+	s_timeWheel[scale].push_back(tdl_map);
+
 }
 

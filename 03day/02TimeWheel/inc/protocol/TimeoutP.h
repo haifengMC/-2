@@ -58,5 +58,8 @@ private:
 	static void insertNewMap(
 		TimeoutTaskR & tt, 
 		list<map<int, TaskData_List>*>& scale_list);
+	static void updataTaskMap(
+		map<int, TaskData_List>*& tdl_map,
+		list<map<int, TaskData_List>*>&  scale_list);
 };
 

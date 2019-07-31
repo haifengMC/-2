@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{69897a55-8b07-4b11-92ec-e506eefb5305}</ProjectGuid>
+    <ProjectGuid>{c5cd75f9-554a-462a-8062-254c3eefd767}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>_02TimeWheel</RootNamespace>
+    <RootNamespace>_03TimeWheel</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -78,47 +78,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin</OutDir>
     <IntDir>$(ProjectDir)obj</IntDir>
-    <TargetExt>
-    </TargetExt>
+    <TargetExt />
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="src\channel\StdinC.cpp" />
-    <ClCompile Include="src\channel\StdoutC.cpp" />
-    <ClCompile Include="src\channel\TimeoutC.cpp" />
-    <ClCompile Include="src\channel\TimeoutDispIC.cpp" />
-    <ClCompile Include="src\channel\TimeoutDispOC.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\protocol\CmdMsg.cpp" />
-    <ClCompile Include="src\protocol\CmdPrsP.cpp" />
-    <ClCompile Include="src\protocol\TimeoutDisprP.cpp" />
-    <ClCompile Include="src\protocol\TimeoutMsg.cpp" />
-    <ClCompile Include="src\protocol\TimeoutP.cpp" />
-    <ClCompile Include="src\role\EchoR.cpp" />
-    <ClCompile Include="src\role\ExitR.cpp" />
-    <ClCompile Include="src\role\OMngR.cpp" />
-    <ClCompile Include="src\role\TimeoutTaskR.cpp" />
+    <ClInclude Include="TimeWheel.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\channel\StdinC.h" />
-    <ClInclude Include="inc\channel\StdoutC.h" />
-    <ClInclude Include="inc\channel\TimeoutC.h" />
-    <ClInclude Include="inc\channel\TimeoutDispIC.h" />
-    <ClInclude Include="inc\channel\TimeoutDispOC.h" />
-    <ClInclude Include="inc\protocol\CmdMsg.h" />
-    <ClInclude Include="inc\protocol\CmdPrsP.h" />
-    <ClInclude Include="inc\protocol\TimeoutDisprP.h" />
-    <ClInclude Include="inc\protocol\TimeoutMsg.h" />
-    <ClInclude Include="inc\protocol\TimeoutP.h" />
-    <ClInclude Include="inc\role\EchoR.h" />
-    <ClInclude Include="inc\role\ExitR.h" />
-    <ClInclude Include="inc\role\OMngR.h" />
-    <ClInclude Include="inc\role\TimeoutTaskR.h" />
+    <ClCompile Include="TimeWheel.cpp" />
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Link>
-      <LibraryDependencies>zinx</LibraryDependencies>
-    </Link>
-  </ItemDefinitionGroup>
+  <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
