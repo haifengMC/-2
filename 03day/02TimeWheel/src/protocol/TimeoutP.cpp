@@ -2,7 +2,7 @@
 #include "../../inc/protocol/TimeoutP.h"
 #include "../../inc/protocol/TimeoutDisprP.h"
 
-
+#define D(X) std::cout << X << ", " << __LINE__ << endl;
 
 TimeoutP::TimeoutP()
 {
@@ -10,21 +10,23 @@ TimeoutP::TimeoutP()
 
 TimeoutP::~TimeoutP()
 {
-	for (list<multimap<_TaskKey, TimeoutTaskR*>*>& scale : s_timeWheel)
+	for (list<map<int, TaskData_List>*>& scale_list : s_timeWheel)
 	{
-		if (scale.empty())continue;
-		for (multimap<_TaskKey, TimeoutTaskR*>* & timeout_map : scale)
+		if (scale_list.empty())continue;
+		for (map<int, TaskData_List>*& ptask_map : scale_list)
 		{
-			for (pair<const _TaskKey, TimeoutTaskR*>& p : *timeout_map)
+			if (NULL == ptask_map)continue;
+			for (pair<const int, TaskData_List>& tdl_pair : *ptask_map)
 			{
-				if (NULL != p.second)
+				for (_TaskData* td : tdl_pair.second)
 				{
-					delete p.second;
-					p.second = NULL;
+					if (NULL == td)continue;
+
+					delete td;
 				}
 			}
 
-			delete timeout_map;
+			delete ptask_map;
 		}
 	}
 
@@ -33,8 +35,7 @@ TimeoutP::~TimeoutP()
 TimeoutP TimeoutP::s_timeout;
 uint64_t TimeoutP::s_oldScale;
 uint64_t TimeoutP::s_timeWheelScale = 0;
-array<list<multimap<TimeoutP::_TaskKey, TimeoutTaskR*>*>,
-	TIME_WHEEL_LEN> TimeoutP::s_timeWheel;
+list<map<int, TimeoutP::TaskData_List>*> TimeoutP::s_timeWheel[TIME_WHEEL_LEN];
 //std::map<int, TimeoutP::_TaskData*> TimeoutP::timeout_map;
 
 TimeoutP & TimeoutP::getInstance()
@@ -44,50 +45,87 @@ TimeoutP & TimeoutP::getInstance()
 
 void TimeoutP::registerTask(TimeoutTaskR & tt)
 {
-	cout << tt.getTimeoutSec() << endl;
 	int scale = (s_timeWheelScale + tt.getTimeoutSec()) % TIME_WHEEL_LEN;
 	int count = (s_timeWheelScale + tt.getTimeoutSec()) / TIME_WHEEL_LEN;
 	
-	list<multimap<_TaskKey, TimeoutTaskR*>*>& s_wheelList = s_timeWheel[scale];
+	//cout << tt.getTaskName() << ", scale" << scale << "count" << count << endl;
 
-	if (s_wheelList.empty())
+	list<map<int, TaskData_List>*>&  scale_list = s_timeWheel[scale];
+
+	if (scale_list.empty())
 	{
-		insertNewMap(tt, s_wheelList);
+		insertNewMap(tt, scale_list);
+		return;
 	}
 	else
 	{
-		for (multimap<_TaskKey, TimeoutTaskR*>*& timeout_map : 
-			s_wheelList)
+		for (map<int, TaskData_List>*& ptask_map : scale_list)
 		{
-			multimap<_TaskKey, TimeoutTaskR*>::iterator timeout_it = 
-				timeout_map->begin();
+			if (NULL == ptask_map)continue;
+	
+			map<int, TaskData_List>::iterator task_it;
 
-			if (findInMap(&tt, timeout_it, *timeout_map))
+			if (ptask_map->end() != 
+				(task_it = ptask_map->find(tt.getTimeoutSec())))
 			{
-				tt.setPCount(timeout_it->first.pcount);
-				timeout_map->insert({ timeout_it->first, &tt });
+				TaskData_List& tdl = task_it->second;
+				for (_TaskData*& td : tdl)
+				{
+					if (count == *td->pcount)
+					{
+						tt.setPCount(td->pcount);
+						td->task_list.push_back(&tt);
+
+						return;
+					}
+				}
+				_TaskData* td = new _TaskData(new int(count));
+				td->task_list.push_back(&tt);
+				tdl.push_back(td);
+
+				return;
 			}
 			else
 			{
-				insertNewMap(tt, s_wheelList);
+				insertNewMap(tt, scale_list);
+				return;
 			}
 		}
 	}
+
 }
 
 void TimeoutP::unregisterTask(const TimeoutTaskR & tt)
 {
-	for (list<multimap<_TaskKey, TimeoutTaskR*>*>& scale : s_timeWheel)
+	for (list<map<int, TaskData_List>*>& scale_list : s_timeWheel)
 	{
-		for (multimap<_TaskKey, TimeoutTaskR*>* & timeout_map : scale)
+		for (map<int, TaskData_List>*& ptask_map : scale_list)
 		{
-			multimap<_TaskKey, TimeoutTaskR*>::iterator timeout_it =
-				timeout_map->begin();
-			
-			if (!findInMap(&tt, timeout_it, *timeout_map))continue;
+			if (ptask_map->end() == ptask_map->find(tt.getTimeoutSec()))
+				continue;
 
-			timeout_map->erase(timeout_it);
+			TaskData_List& tdl = (*ptask_map)[tt.getTimeoutSec()];
 
+			for (_TaskData*& ptd : tdl)
+			{
+				ptd->task_list.remove(&tt);
+				if (ptd->task_list.empty())
+				{
+					tdl.remove(ptd);
+					break;
+				}
+			}
+
+			if (tdl.empty())
+			{
+				ptask_map->erase(tt.getTimeoutSec());
+				if (ptask_map->empty())
+				{
+					scale_list.remove(ptask_map);
+					delete ptask_map;
+				}
+				break;
+			}
 		}
 	}
 }
@@ -99,22 +137,30 @@ UserData * TimeoutP::raw2request(std::string _szInput)
 
 	for (int i = 0; i < s_timeWheelScale - s_oldScale; i++)
 	{
-		for (list<multimap<_TaskKey, TimeoutTaskR*>*>& scale_list : s_timeWheel)
+		for (list<map<int, TaskData_List>*>& scale_list : s_timeWheel)
 		{
 			if (scale_list.empty())continue;
-			for (multimap<_TaskKey, TimeoutTaskR*>* &task_map : scale_list)
+			for (map<int, TaskData_List>*& ptask_map : scale_list)
 			{
-				if (task_map->empty())continue;
-				for (pair<_TaskKey, TimeoutTaskR*> task_pair : *task_map)
+				if (NULL == ptask_map)continue;
+				for (pair<const int, TaskData_List>& tdl_pair : *ptask_map)
 				{
-					char buf[sizeof(TimeoutTaskR*)];
-					memcpy(buf, task_pair.second, sizeof(TimeoutTaskR*));
-					std::string str(buf, sizeof(buf));
+					for (_TaskData* td : tdl_pair.second)
+					{
+						for (const TimeoutTaskR*& ppt : td->task_list)
+						{
+							char buf[sizeof(TimeoutTaskR*)];
+							memcpy(buf, &ppt, sizeof(TimeoutTaskR*));
+							std::string str(buf, sizeof(buf));
 
-					Ichannel* ch = ZinxKernel::
-						Zinx_GetChannel_ByInfo("timeout_dispO_channel");
+							Ichannel* ch = ZinxKernel::
+								Zinx_GetChannel_ByInfo("timeout_dispO_channel");
 
-					ZinxKernel::Zinx_SendOut(str, *ch);
+							ZinxKernel::Zinx_SendOut(str, *ch);
+						}
+
+					}
+		
 				}
 			}
 		}
@@ -139,44 +185,53 @@ Ichannel * TimeoutP::GetMsgSender(BytesMsg & _oBytes)
 	return nullptr;
 }
 
-bool TimeoutP::findInMap(
-	const TimeoutTaskR * const & ptt,
-	multimap<const _TaskKey, TimeoutTaskR*>::iterator& ptt_it,
-	multimap<_TaskKey, TimeoutTaskR*>& ptt_list)
-{
-	ptt_it = ptt_list.begin();
-
-	do 
-	{
-		if (ptt == ptt_it->second)
-			return true;
-	}
-	while (ptt_list.end() != ++ptt_it);
-
-	ptt_it = ptt_list.end();
-
-	return false;
-}
+//bool TimeoutP::findInMap(
+//	const TimeoutTaskR * const & ptt,
+//	multimap<const _TaskKey, TimeoutTaskR*>::iterator& ptt_it,
+//	multimap<_TaskKey, TimeoutTaskR*>& ptt_list)
+//{
+//	ptt_it = ptt_list.begin();
+//	multimap<const _TaskKey, TimeoutTaskR*>::iterator ptt_it2 =
+//		ptt_list.begin();
+//	do 
+//	{
+//		if (ptt->getTimeoutSec() == ptt_it->second->getTimeoutSec())
+//		{
+//			if (NULL == ptt->getPCount())
+//			{
+//				
+//				return true;
+//			}
+//			else if (*ptt->getPCount() == *ptt_it->second->getPCount())
+//			{
+//				return true;
+//			}
+//		}
+//	}
+//	while (ptt_list.end() != ++ptt_it);
+//
+//	ptt_it = ptt_list.end();
+//
+//	return false;
+//}
 
 void TimeoutP::insertNewMap(
-	TimeoutTaskR & tt, 
-	list<multimap<_TaskKey, TimeoutTaskR*>*>& s_wheelList)
+	TimeoutTaskR & tt,
+	list<map<int, TaskData_List>*>& scale_list)
 {
-	int count = (s_timeWheelScale + tt.getTimeoutSec()) / TIME_WHEEL_LEN;
+	int count = 
+		(s_timeWheelScale + tt.getTimeoutSec()) / 
+		TIME_WHEEL_LEN;
 
-	multimap<_TaskKey, TimeoutTaskR*>* p_timeout_map =
-		new multimap<_TaskKey, TimeoutTaskR*>;
+	map<int, TaskData_List>* ptask_map =
+		new map<int, TaskData_List>;
 
-	_TaskKey tk = 
-	{
-		tt.getTimeoutSec(), 
-		new int(count)
-	};
+	TaskData_List& tdl = (*ptask_map)[tt.getTimeoutSec()];
+	_TaskData* td = new _TaskData(new int(count));
+	td->task_list.push_back(&tt);
+	tdl.push_back(td);
 
-	tt.setPCount(tk.pcount);
 
-	p_timeout_map->insert({ tk, &tt });
-
-	s_wheelList.push_back(p_timeout_map);
+	scale_list.push_back(ptask_map);
 }
 

@@ -35,6 +35,11 @@ void TimeoutTaskR::Fini()
 {
 }
 
+const std::string TimeoutTaskR::getTaskName() const
+{
+	return task_name;
+}
+
 const int & TimeoutTaskR::getTimeoutSec() const
 {
 	return timeout_sec;

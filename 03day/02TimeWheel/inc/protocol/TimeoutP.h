@@ -13,30 +13,21 @@ using namespace std;
 class TimeoutP :
 	public Iprotocol
 {
-	struct _TaskKey
+	struct _TaskData
 	{
-		const int sec;
 		int const* pcount;
+		list<const TimeoutTaskR*> task_list;
 
-		~_TaskKey()
+		_TaskData(int const* pcount) : pcount(pcount)
 		{
-			if (NULL != pcount)
-				delete pcount;
+
 		}
-		bool operator==(const _TaskKey& tk)
+		~_TaskData()
 		{
-			if (sec == tk.sec && *pcount == *tk.pcount)
-			{
-				return true;
-			}
-		}
-		bool operator<(const _TaskKey& tk) const
-		{
-			if (sec < tk.sec) return true;
-			else if (sec == tk.sec && *pcount < *tk.pcount)return true;
-			else return false;
+			delete pcount;
 		}
 	};
+	typedef list<_TaskData*> TaskData_List;
 public:
 	TimeoutP();
 	virtual ~TimeoutP();
@@ -55,15 +46,17 @@ private:
 	static TimeoutP s_timeout;
 	static uint64_t s_oldScale;
 	static uint64_t s_timeWheelScale;
-	static array<list<multimap<_TaskKey, TimeoutTaskR*>*>, TIME_WHEEL_LEN> s_timeWheel;
-	//static std::map<int, _TaskData*> timeout_map;
 
-	static bool findInMap(
-		const TimeoutTaskR * const & ptt,
-		multimap<const _TaskKey, TimeoutTaskR*>::iterator& ptt_it,
-		multimap<_TaskKey, TimeoutTaskR*>& ptt_list);
+	static list<map<int,TaskData_List>*> s_timeWheel[TIME_WHEEL_LEN];
+	//static list<multimap<_TaskKey, TimeoutTaskR*>*> s_timeWheel[TIME_WHEEL_LEN];
+	////static std::map<int, _TaskData*> timeout_map;
+
+	//static bool findInMap(
+	//	const TimeoutTaskR * const & ptt,
+	//	multimap<const _TaskKey, TimeoutTaskR*>::iterator& ptt_it,
+	//	multimap<_TaskKey, TimeoutTaskR*>& ptt_list);
 	static void insertNewMap(
 		TimeoutTaskR & tt, 
-		list<multimap<_TaskKey, TimeoutTaskR*>*>& s_wheelList);
+		list<map<int, TaskData_List>*>& scale_list);
 };
 

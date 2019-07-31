@@ -16,6 +16,7 @@ public:
 
 	virtual void Fini() override;
 
+	const std::string getTaskName() const;
 	const int& getTimeoutSec() const;
 	int *const & getPCount() const;
 	void setPCount(const int*const & pc);
