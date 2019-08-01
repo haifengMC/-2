@@ -101,7 +101,8 @@ void TimeoutP::registerTask(TimeoutTaskR & tt)
 
 void TimeoutP::unregisterTask(TimeoutTaskR & tt)
 {
-	D(tt.getTaskName());
+	//D(tt.getTaskName());
+
 	for (int i = 0; i < TIME_WHEEL_LEN; i++)
 	{
 		_Scale& s = s_timewheel[i];
@@ -115,20 +116,20 @@ void TimeoutP::unregisterTask(TimeoutTaskR & tt)
 				if (tcg.empty()) continue;
 				if (tcg.pcount != tt.getPCount()) continue;
 
-				std::cout << "[" << __LINE__ << "], "; 
-				for (auto a : tcg)
-					std::cout << a->getTaskName() << " "; 
-				std::cout << std::endl;
+				//std::cout << "[" << __LINE__ << "], "; 
+				//for (auto a : tcg)
+				//	std::cout << a->getTaskName() << " "; 
+				//std::cout << std::endl;
 
 				for (TimeoutTaskR* ptt : tcg)
 				{
 					if (ptt == &tt)
 					{
-						D(ptt->getTaskName());
+						//D(ptt->getTaskName());
 						tt.setPCount(NULL);
 						tcg.remove(&tt);
 
-						D("remove ok");
+						//D("remove ok");
 						break;
 					}
 				}
@@ -140,6 +141,14 @@ void TimeoutP::unregisterTask(TimeoutTaskR & tt)
 			break;
 		}
 	}
+
+
+	//std::cout << "[" << __LINE__ << "], ";
+	//for (int i = 0; i < TIME_WHEEL_LEN; i++)
+	//{
+	//	cout << s_timewheel[i].getState() << " ";
+	//}
+	//cout << endl;
 }
 
 UserData * TimeoutP::raw2request(std::string _szInput)
