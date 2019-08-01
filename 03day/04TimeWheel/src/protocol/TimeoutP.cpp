@@ -3,9 +3,9 @@
 #include "../../inc/protocol/TimeoutDisprP.h"
 
 #define D(X) std::cout << #X", " << X << ", " << __LINE__ << endl;
-#define Darr(X) \
+#define Darr(X, func) \
 	std::cout << #X"[" << __LINE__ << "], "; \
-	for (auto a : X) std::cout << a.getState() << "\t";\
+	for (auto a : X) std::cout << func << "\t";\
 	std::cout << std::endl
 
 
@@ -47,7 +47,7 @@ TimeoutP & TimeoutP::getInstance()
 void TimeoutP::registerTask(TimeoutTaskR & tt)
 {
 	int scale = (s_timeWheelScale + tt.getTimeoutSec()) % TIME_WHEEL_LEN;
-	int count = (s_timeWheelScale + tt.getTimeoutSec()) / TIME_WHEEL_LEN;
+	int count = tt.getTimeoutSec() / TIME_WHEEL_LEN;
 	
 	_Scale& s = s_timewheel[scale];
 
@@ -155,8 +155,18 @@ UserData * TimeoutP::raw2request(std::string _szInput)
 {
 	s_oldScale = s_timeWheelScale;
 	s_timeWheelScale += *(uint64_t*)_szInput.data();
+	if (TIME_WHEEL_LEN == s_timeWheelScale)
+	{
+		int temp = s_timeWheelScale - s_oldScale;
+		s_timeWheelScale = 0;
+		s_oldScale = s_timeWheelScale - temp;
+	}
 
-	//D(s_timeWheelScale);
+	//if (s_timeWheelScale == 0)
+	//{
+	//	D(s_timeWheelScale);
+
+	//}
 
 	int scale = s_timeWheelScale % TIME_WHEEL_LEN;
 
@@ -171,15 +181,17 @@ UserData * TimeoutP::raw2request(std::string _szInput)
 	{
 
 		_Scale& s = s_timewheel[scale - i];
+		//D(scale - i);
 
 		//Darr(s);
 
 		for (_TaskGrp& tg : s)
 		{
-			if (tg.empty())continue;
+			if (tg.empty()) continue;
 			for (_TaskCountGrp& tcg : tg)
 			{
-				if (tcg.empty())continue;
+				if (tcg.empty()) continue;
+				if (0 < *tcg.pcount) continue;
 				for (TimeoutTaskR*& pttask : tcg)
 				{
 					char buf[sizeof(TimeoutTaskR*)];
@@ -218,51 +230,125 @@ Ichannel * TimeoutP::GetMsgSender(BytesMsg & _oBytes)
 
 void TimeoutP::updataScale(_Scale & scale)
 {
-	//int scale = (s_timeWheelScale + tt.getTimeoutSec()) % TIME_WHEEL_LEN;
-	//int count = (s_timeWheelScale + tt.getTimeoutSec()) / TIME_WHEEL_LEN;
-	list<_TaskGrp*> del_tg;
+	std::cout << s_timeWheelScale << "[" << __LINE__ << "], ";
+	for (int i = 0; i < TIME_WHEEL_LEN; i++)
+	{
+		cout << s_timewheel[i].getState() << " ";
+	}
+	cout << endl;
 
-	if (scale.empty()) return;
+	//if (s_timeWheelScale == 15)
+	//{
+	//	D(s_timeWheelScale);
+
+	//}
+
+	list<_TaskGrp*> tgDel;
+
 	for (_TaskGrp& tg : scale)
 	{
 		if (tg.empty()) continue;
+		//D(tg.sec_key);
 
 		int m_scale = (s_timeWheelScale + tg.sec_key) % TIME_WHEEL_LEN;
-		int m_count = (s_timeWheelScale + tg.sec_key) / TIME_WHEEL_LEN;
+		int m_count = tg.sec_key / TIME_WHEEL_LEN;
+		list<_TaskCountGrp*> tcgDel;
 
-
-		for (_TaskGrp& tgDest : s_timewheel[m_scale])
+		for (_TaskCountGrp& tcg : tg)
 		{
-			if (tgDest.empty()) break;
-
-			if (tg.sec_key == tgDest.sec_key)
+			
+			if (tcg.empty()) continue;
+			//Darr(tcg, a->getTaskName());
+			*tcg.pcount -= 1;
+			if (0 > *tcg.pcount)
 			{
-				for (_TaskCountGrp& tcg : tg)
-				{
-					if (tcg.empty()) continue;
-
-					for (_TaskCountGrp& tcgDest : tgDest)
-					{
-						if (tcgDest.empty()) break;
-						if (*tcgDest.pcount == *tcg.pcount)
-						{
-							tcgDest.insert(tcgDest.end(), tcg.begin(), tcg.end());
-							tcg.clear();
-						}
-					}
-				}
-				tgDest.insert(tgDest.end(), tg.begin(), tg.end());
-				tg.clear();
+				*tcg.pcount = m_count;
+				_TaskGrp tgTmp(tg.sec_key);
+				tgTmp.pushback(tcg);
+				s_timewheel[m_scale].pushback(tgTmp);
+				tcgDel.push_back(&tcg);
 			}
 		}
-		s_timewheel[m_scale].pushback(tg);
-		del_tg.push_back(&tg);
+		for (_TaskCountGrp* &ptcg : tcgDel)
+		{
+			tg.remove(*ptcg);
+		}
+
+		if (tg.empty())
+			tgDel.push_back(&tg);
+
 	}
 
-	for (_TaskGrp* &ptg : del_tg)
+	for (_TaskGrp* &ptg : tgDel)
 	{
 		scale.remove(*ptg);
 	}
+
+
+	//list<_TaskGrp*> del_tg;
+
+	//if (scale.empty()) return;
+	//for (_TaskGrp& tg : scale)
+	//{
+	//	if (tg.empty()) continue;
+
+	//	int m_scale = (s_timeWheelScale + tg.sec_key) % TIME_WHEEL_LEN;
+	//	int m_count = (s_timeWheelScale + tg.sec_key) / TIME_WHEEL_LEN;
+
+
+	//	for (_TaskGrp& tgDest : s_timewheel[m_scale])
+	//	{
+	//		if (tgDest.empty()) break;
+
+	//		if (tg.sec_key == tgDest.sec_key)
+	//		{
+	//			for (_TaskCountGrp& tcg : tg)
+	//			{
+	//				if (tcg.empty()) continue;
+	//				if (*tcg.pcount) continue;
+	//				for (_TaskCountGrp& tcgDest : tgDest)
+	//				{
+	//					if (tcgDest.empty()) break;
+	//					if (*tcgDest.pcount == *tcg.pcount)
+	//					{
+	//						tcgDest.insert(tcgDest.end(), tcg.begin(), tcg.end());
+	//						tcg.clear();
+	//					}
+	//				}
+	//			}
+	//			tgDest.insert(tgDest.end(), tg.begin(), tg.end());
+	//			tg.clear();
+	//		}
+
+	//		
+	//		list<_TaskCountGrp*> tcgDel;
+	//		for (_TaskCountGrp& tcg : tg)
+	//		{
+	//			if (tcg.empty()) continue;
+	//			if (0 == *tcg.pcount)
+	//			{
+	//				*tcg.pcount = m_count;
+	//				_TaskGrp tgTmp(tg.sec_key);
+	//				tgTmp.pushback(tcg);
+	//				s_timewheel[m_scale].pushback(tgTmp);
+	//				tcgDel.push_back(&tcg);
+	//			}
+	//		}
+	//		for (_TaskCountGrp* &ptcg : tcgDel)
+	//		{
+	//			tg.remove(*ptcg);
+	//		}
+	//		
+	//		//s_timewheel[m_scale].pushback(tg);
+	//		if (tg.empty())
+	//			del_tg.push_back(&tg);
+	//	}
+	//}
+
+	//for (_TaskGrp* &ptg : del_tg)
+	//{
+	//	scale.remove(*ptg);
+	//}
 }
 
 //bool TimeoutP::findInMap(
@@ -330,14 +416,35 @@ void TimeoutP::_Scale::clear()
 	return taskGrp.clear();
 }
 
-void TimeoutP::_Scale::pushback(const _TaskGrp & tg)
+void TimeoutP::_Scale::pushback(_TaskGrp & tg)
 {
+	if (tg.empty()) return;
+	for (_TaskGrp tgTmp : taskGrp)
+	{
+		if (tgTmp == tg)
+		{
+			for (_TaskCountGrp& tcg : tg)
+					tgTmp.pushback(tcg);
+			return;
+		}
+	}
 	taskGrp.push_back(tg);
+
 }
 
 TimeoutP::_Scale::TGit TimeoutP::_Scale::insert(const TGit & pos, const TGit & beg, const TGit & end)
 {
 	return taskGrp.insert(pos, beg, end);
+}
+
+TimeoutP::_Scale::TGit TimeoutP::_Scale::insertIf(const TGit & pos, const TGit & beg, const TGit & end, bool(*ifProc)(const TGit &ifpos))
+{
+	TGit new_pos = pos;
+	for (TGit tmp = beg; tmp != end; tmp++)
+	{
+		if (ifProc(tmp)) new_pos = taskGrp.insert(new_pos, *tmp);
+	}
+	return new_pos;
 }
 
 void TimeoutP::_Scale::remove(const _TaskGrp & tg)
@@ -380,14 +487,47 @@ void TimeoutP::_TaskGrp::clear()
 	return taskCountGrp.clear();
 }
 
-void TimeoutP::_TaskGrp::pushback(const _TaskCountGrp & tcg)
+void TimeoutP::_TaskGrp::pushback(_TaskCountGrp & tcg)
 {
+	if (tcg.empty()) return;
+	for (_TaskCountGrp tcgTmp : taskCountGrp)
+	{
+		if (tcgTmp == tcg)
+		{
+			bool next = false;
+			for (TimeoutTaskR*& ptt : tcg)
+			{
+				for (TimeoutTaskR*& pttTmp : tcgTmp)
+				{
+					if (ptt == pttTmp)
+					{
+						next = true;
+						break;
+					}
+				}
+				if (next) continue;
+				
+				tcgTmp.pushback(ptt);
+			}
+			return;
+		}
+	}
 	taskCountGrp.push_back(tcg);
 }
 
 TimeoutP::_TaskGrp::TCGit TimeoutP::_TaskGrp::insert(const TCGit & pos, const TCGit & beg, const TCGit & end)
 {
 	return taskCountGrp.insert(pos, beg, end);
+}
+
+TimeoutP::_TaskGrp::TCGit TimeoutP::_TaskGrp::insertIf(const TCGit & pos, const TCGit & beg, const TCGit & end, bool(*ifProc)(const TCGit &ifpos))
+{
+	TCGit new_pos = pos;
+	for (TCGit tmp = beg; tmp != end; tmp++)
+	{
+		if (ifProc(tmp)) new_pos = taskCountGrp.insert(new_pos, *tmp);
+	}
+	return new_pos;
 }
 
 void TimeoutP::_TaskGrp::remove(const _TaskCountGrp & tcg)
@@ -459,6 +599,16 @@ TimeoutP::_TaskCountGrp::PTTit TimeoutP::_TaskCountGrp::insert(const PTTit & pos
 	return timeTask.insert(pos, beg, end);
 }
 
+TimeoutP::_TaskCountGrp::PTTit TimeoutP::_TaskCountGrp::insertIf(const PTTit & pos, const PTTit & beg, const PTTit & end, bool(*ifProc)(const PTTit &ifpos))
+{
+	PTTit new_pos = pos;
+	for (PTTit tmp = beg; tmp != end; tmp++)
+	{
+		if (ifProc(tmp)) new_pos = timeTask.insert(new_pos, *tmp);
+	}
+	return new_pos;
+}
+
 void TimeoutP::_TaskCountGrp::remove(TimeoutTaskR * const & ttask)
 {
 	timeTask.remove(ttask);
@@ -481,7 +631,7 @@ list<TimeoutTaskR*>::iterator TimeoutP::_TaskCountGrp::end()
 
 bool TimeoutP::_TaskCountGrp::operator==(const _TaskCountGrp & tcg)
 {
-	if (*pcount == *tcg.pcount)
+	if (pcount == tcg.pcount)
 	{
 		return true;
 	}

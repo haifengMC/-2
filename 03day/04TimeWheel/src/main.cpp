@@ -49,12 +49,14 @@ int main()
 		Irole* p_task1 = new TimeoutTaskR("task1", 3);
 		Irole* p_task2 = new TimeoutTaskR("task2", 1);
 		Irole* p_task3 = new TimeoutTaskR("task3", 3);
+		Irole* p_task4 = new TimeoutTaskR("task4", 17);
 		ZinxKernel::Zinx_Add_Role(*p_echoR); 
 		ZinxKernel::Zinx_Add_Role(*p_exitR);
 		ZinxKernel::Zinx_Add_Role(*p_oMngR);
 		ZinxKernel::Zinx_Add_Role(*p_task1);
 		ZinxKernel::Zinx_Add_Role(*p_task2);
 		ZinxKernel::Zinx_Add_Role(*p_task3);
+		ZinxKernel::Zinx_Add_Role(*p_task4);
 		//2.4.添加命令到协议
 		CmdPrsP::addRole("echo", p_echoR);
 		CmdPrsP::addRole("exit", p_exitR);
@@ -84,12 +86,14 @@ int main()
 		ZinxKernel::Zinx_Del_Role(*p_task1);
 		ZinxKernel::Zinx_Del_Role(*p_task2);
 		ZinxKernel::Zinx_Del_Role(*p_task3);
+		ZinxKernel::Zinx_Del_Role(*p_task4);
 		delete(p_echoR);
 		delete(p_exitR);
 		delete(p_oMngR);
 		delete(p_task1);
 		delete(p_task2);
 		delete(p_task3);
+		delete(p_task4);
 		//5.释放核心
 		ZinxKernel::ZinxKernelFini();
 	}

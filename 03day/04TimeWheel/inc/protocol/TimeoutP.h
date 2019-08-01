@@ -28,6 +28,7 @@ class TimeoutP :
 		void clear();
 		void pushback(TimeoutTaskR * const & ttask);
 		PTTit insert(const PTTit& pos, const PTTit& beg, const PTTit& end);
+		PTTit insertIf(const PTTit& pos, const PTTit& beg, const PTTit& end, bool(*ifProc)(const PTTit& ifpos));
 		void remove(TimeoutTaskR * const & ttask);
 		PTTit erase(const PTTit& beg, const PTTit& end);
 		list<TimeoutTaskR*>::iterator begin();
@@ -47,8 +48,9 @@ class TimeoutP :
 
 		bool empty();
 		void clear();
-		void pushback(const _TaskCountGrp & tcg);
+		void pushback(_TaskCountGrp & tcg);
 		TCGit insert(const TCGit& pos, const TCGit& beg, const TCGit& end);
+		TCGit insertIf(const TCGit& pos, const TCGit& beg, const TCGit& end, bool(*ifProc)(const TCGit& ifpos));
 		void remove(const _TaskCountGrp & tcg);
 		TCGit erase(const TCGit& beg, const TCGit& end);
 		list<_TaskCountGrp>::iterator begin();
@@ -65,8 +67,9 @@ class TimeoutP :
 
 		bool empty();
 		void clear();
-		void pushback(const _TaskGrp & tg);
+		void pushback(_TaskGrp & tg);
 		TGit insert(const TGit& pos, const TGit& beg, const TGit& end);
+		TGit insertIf(const TGit& pos, const TGit& beg, const TGit& end, bool (*ifProc)(const TGit& ifpos));
 		void remove(const _TaskGrp & tg);
 		TGit erase(const TGit& beg, const TGit& end);
 		TGit begin();
