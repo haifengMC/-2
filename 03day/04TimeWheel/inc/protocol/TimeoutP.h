@@ -20,6 +20,9 @@ class TimeoutP :
 		list<TimeoutTaskR*> timeTask;
 
 		_TaskCountGrp(int *const &pcount);
+		~_TaskCountGrp();
+
+		int getState();
 
 		bool empty();
 		void clear();
@@ -29,6 +32,8 @@ class TimeoutP :
 		PTTit erase(const PTTit& beg, const PTTit& end);
 		list<TimeoutTaskR*>::iterator begin();
 		list<TimeoutTaskR*>::iterator end();
+
+		bool operator==(const _TaskCountGrp& tcg);
 	};
 	struct _TaskGrp
 	{
@@ -38,6 +43,8 @@ class TimeoutP :
 
 		_TaskGrp(const int& sec_key);
 
+		int getState();
+
 		bool empty();
 		void clear();
 		void pushback(const _TaskCountGrp & tcg);
@@ -46,11 +53,15 @@ class TimeoutP :
 		TCGit erase(const TCGit& beg, const TCGit& end);
 		list<_TaskCountGrp>::iterator begin();
 		list<_TaskCountGrp>::iterator end();
+
+		bool operator==(const _TaskGrp& tg);
 	};
 	struct _Scale
 	{
 		typedef list<_TaskGrp>::iterator TGit;
 		list<_TaskGrp> taskGrp;
+
+		int getState();
 
 		bool empty();
 		void clear();

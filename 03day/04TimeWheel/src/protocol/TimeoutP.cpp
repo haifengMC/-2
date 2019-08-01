@@ -3,6 +3,11 @@
 #include "../../inc/protocol/TimeoutDisprP.h"
 
 #define D(X) std::cout << #X", " << X << ", " << __LINE__ << endl;
+#define Darr(X) \
+	std::cout << #X"[" << __LINE__ << "], "; \
+	for (auto a : X) std::cout << a.getState() << "\t";\
+	std::cout << std::endl
+
 
 TimeoutP::TimeoutP()
 {
@@ -96,22 +101,43 @@ void TimeoutP::registerTask(TimeoutTaskR & tt)
 
 void TimeoutP::unregisterTask(TimeoutTaskR & tt)
 {
+	D(tt.getTaskName());
 	for (int i = 0; i < TIME_WHEEL_LEN; i++)
 	{
 		_Scale& s = s_timewheel[i];
+		if (s.empty()) continue;
 		for (_TaskGrp& tg : s)
 		{
+			if (tg.empty()) continue;
 			if (tg.sec_key != tt.getTimeoutSec()) continue;
 			for (_TaskCountGrp& tcg : tg)
 			{
+				if (tcg.empty()) continue;
 				if (tcg.pcount != tt.getPCount()) continue;
 
-				tt.setPCount(NULL);
-				tcg.remove(&tt);
+				std::cout << "[" << __LINE__ << "], "; 
+				for (auto a : tcg)
+					std::cout << a->getTaskName() << " "; 
+				std::cout << std::endl;
+
+				for (TimeoutTaskR* ptt : tcg)
+				{
+					if (ptt == &tt)
+					{
+						D(ptt->getTaskName());
+						tt.setPCount(NULL);
+						tcg.remove(&tt);
+
+						D("remove ok");
+						break;
+					}
+				}
 
 				if (tcg.empty()) tg.remove(tcg);
+				break;
 			}
 			if (tg.empty()) s.remove(tg);
+			break;
 		}
 	}
 }
@@ -121,13 +147,23 @@ UserData * TimeoutP::raw2request(std::string _szInput)
 	s_oldScale = s_timeWheelScale;
 	s_timeWheelScale += *(uint64_t*)_szInput.data();
 
+	//D(s_timeWheelScale);
+
 	int scale = s_timeWheelScale % TIME_WHEEL_LEN;
 
+	//std::cout << "[" << __LINE__ << "], ";
+	//for (int i = 0; i < TIME_WHEEL_LEN; i++)
+	//{
+	//	cout << s_timewheel[i].getState() << " ";
+	//}
+	//cout << endl;
 
 	for (int i = s_timeWheelScale - s_oldScale - 1; i >= 0; i--)
 	{
 
-		_Scale& s = s_timewheel[i]; 
+		_Scale& s = s_timewheel[scale - i];
+
+		//Darr(s);
 
 		for (_TaskGrp& tg : s)
 		{
@@ -148,6 +184,8 @@ UserData * TimeoutP::raw2request(std::string _szInput)
 				}
 			}
 		}
+
+		updataScale(s);
 	}
 	return nullptr;
 }
@@ -268,6 +306,11 @@ void TimeoutP::updataScale(_Scale & scale)
 //	scale_list.push_back(ptask_map);
 //}
 
+int TimeoutP::_Scale::getState()
+{
+	return !empty();
+}
+
 bool TimeoutP::_Scale::empty()
 {
 	return taskGrp.empty();
@@ -313,6 +356,11 @@ TimeoutP::_TaskGrp::_TaskGrp(const int & sec_key) :
 {
 }
 
+int TimeoutP::_TaskGrp::getState()
+{
+	return sec_key;
+}
+
 bool TimeoutP::_TaskGrp::empty()
 {
 	return taskCountGrp.empty();
@@ -353,10 +401,33 @@ list<TimeoutP::_TaskCountGrp>::iterator TimeoutP::_TaskGrp::end()
 	return taskCountGrp.end();
 }
 
+bool TimeoutP::_TaskGrp::operator==(const _TaskGrp & tg)
+{
+	if (sec_key == tg.sec_key)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 TimeoutP::_TaskCountGrp::_TaskCountGrp(int * const & pcount) :
 	pcount(pcount)
 {
 
+}
+
+TimeoutP::_TaskCountGrp::~_TaskCountGrp()
+{
+	if (timeTask.empty())
+	{
+		delete pcount;
+	}
+}
+
+int TimeoutP::_TaskCountGrp::getState()
+{
+	return *pcount;
 }
 
 bool TimeoutP::_TaskCountGrp::empty()
@@ -397,5 +468,15 @@ list<TimeoutTaskR*>::iterator TimeoutP::_TaskCountGrp::begin()
 list<TimeoutTaskR*>::iterator TimeoutP::_TaskCountGrp::end()
 {
 	return timeTask.end();
+}
+
+bool TimeoutP::_TaskCountGrp::operator==(const _TaskCountGrp & tcg)
+{
+	if (*pcount == *tcg.pcount)
+	{
+		return true;
+	}
+
+	return false;
 }
 

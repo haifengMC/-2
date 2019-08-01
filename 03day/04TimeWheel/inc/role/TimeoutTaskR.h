@@ -1,5 +1,6 @@
 #pragma once
 #include "zinx.h"
+
 class TimeoutTaskR :
 	public Irole
 {
@@ -18,11 +19,12 @@ public:
 
 	const std::string getTaskName() const;
 	const int& getTimeoutSec() const;
-	int *const & getPCount() const;
-	void setPCount(const int*const & pc);
+	int* const& getPCount() const;
+	void setPCount(const int* const & pc);
 private:
 	const int timeout_sec = 0;
 	int* pcount = NULL;
+	//shared_ptr<int> pcount;
 	std::string task_name;
 
 };

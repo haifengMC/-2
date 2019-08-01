@@ -45,12 +45,13 @@ const int & TimeoutTaskR::getTimeoutSec() const
 	return timeout_sec;
 }
 
-int *const & TimeoutTaskR::getPCount() const
+int* const&  TimeoutTaskR::getPCount() const
 {
 	return pcount;
 }
 
-void TimeoutTaskR::setPCount(const int *const & pc)
+void TimeoutTaskR::setPCount(const int* const & pc)
 {
 	pcount = (int*)pc;
+	//pcount = make_shared<int>(pc);
 }
