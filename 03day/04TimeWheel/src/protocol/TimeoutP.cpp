@@ -230,12 +230,12 @@ Ichannel * TimeoutP::GetMsgSender(BytesMsg & _oBytes)
 
 void TimeoutP::updataScale(_Scale & scale)
 {
-	std::cout << s_timeWheelScale << "[" << __LINE__ << "], ";
-	for (int i = 0; i < TIME_WHEEL_LEN; i++)
-	{
-		cout << s_timewheel[i].getState() << " ";
-	}
-	cout << endl;
+	//std::cout << s_timeWheelScale << "[" << __LINE__ << "], ";
+	//for (int i = 0; i < TIME_WHEEL_LEN; i++)
+	//{
+	//	cout << s_timewheel[i].getState() << " ";
+	//}
+	//cout << endl;
 
 	//if (s_timeWheelScale == 15)
 	//{
@@ -403,7 +403,7 @@ void TimeoutP::updataScale(_Scale & scale)
 
 int TimeoutP::_Scale::getState()
 {
-	return !empty();
+	return taskGrp.size();
 }
 
 bool TimeoutP::_Scale::empty()

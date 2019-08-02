@@ -76,8 +76,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(ProjectDir)bin</OutDir>
-    <IntDir>$(ProjectDir)obj</IntDir>
+    <OutDir>$(ProjectDir)bin\</OutDir>
+    <IntDir>$(ProjectDir)obj\</IntDir>
     <TargetExt>
     </TargetExt>
   </PropertyGroup>
