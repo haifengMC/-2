@@ -4,10 +4,51 @@
     <Filter Include="src">
       <UniqueIdentifier>{05553b92-4954-4067-bce6-288ea1ead6a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{cfc1a73d-b201-421c-9ce4-f4768b0611b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\channel">
+      <UniqueIdentifier>{ec8b3fd9-c8a7-4349-91a5-a00b33f23246}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\role">
+      <UniqueIdentifier>{1da17d24-5c68-4589-a0b5-fab9eaeb1905}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\protocol">
+      <UniqueIdentifier>{86024e7e-f41b-4a95-8ae7-f09481b6c6f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\channel">
+      <UniqueIdentifier>{c8256748-2342-4c2d-848e-1e39177cbc87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\role">
+      <UniqueIdentifier>{aacdaf2f-841a-4323-b5b5-a8b8168fe027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\protocol">
+      <UniqueIdentifier>{0c72c5ac-173c-4ab4-9e62-252f6cb3d372}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\channel\GameC.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameP.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\role\GameR.cpp">
+      <Filter>src\role</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\channel\GameC.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameP.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\role\GameR.h">
+      <Filter>inc\role</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
