@@ -31,6 +31,7 @@ class TimeoutP :
 		PTTit insertIf(const PTTit& pos, const PTTit& beg, const PTTit& end, bool(*ifProc)(const PTTit& ifpos));
 		void remove(TimeoutTaskR * const & ttask);
 		PTTit erase(const PTTit& beg, const PTTit& end);
+		PTTit erase(const PTTit& pos);
 		list<TimeoutTaskR*>::iterator begin();
 		list<TimeoutTaskR*>::iterator end();
 
@@ -53,6 +54,7 @@ class TimeoutP :
 		TCGit insertIf(const TCGit& pos, const TCGit& beg, const TCGit& end, bool(*ifProc)(const TCGit& ifpos));
 		void remove(const _TaskCountGrp & tcg);
 		TCGit erase(const TCGit& beg, const TCGit& end);
+		TCGit erase(const TCGit& pos);
 		list<_TaskCountGrp>::iterator begin();
 		list<_TaskCountGrp>::iterator end();
 
@@ -72,6 +74,7 @@ class TimeoutP :
 		TGit insertIf(const TGit& pos, const TGit& beg, const TGit& end, bool (*ifProc)(const TGit& ifpos));
 		void remove(const _TaskGrp & tg);
 		TGit erase(const TGit& beg, const TGit& end);
+		TGit erase(const TGit& pos);
 		TGit begin();
 		TGit end();
 
