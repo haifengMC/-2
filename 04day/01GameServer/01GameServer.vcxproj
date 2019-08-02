@@ -83,11 +83,13 @@
   <ItemGroup>
     <ClCompile Include="src\channel\GameC.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\protocol\GameMsg.cpp" />
     <ClCompile Include="src\protocol\GameP.cpp" />
     <ClCompile Include="src\role\GameR.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\channel\GameC.h" />
+    <ClInclude Include="inc\protocol\GameMsg.h" />
     <ClInclude Include="inc\protocol\GameP.h" />
     <ClInclude Include="inc\role\GameR.h" />
   </ItemGroup>

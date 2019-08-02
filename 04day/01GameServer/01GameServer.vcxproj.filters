@@ -39,6 +39,9 @@
     <ClCompile Include="src\role\GameR.cpp">
       <Filter>src\role</Filter>
     </ClCompile>
+    <ClCompile Include="src\protocol\GameMsg.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\channel\GameC.h">
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="inc\role\GameR.h">
       <Filter>inc\role</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameMsg.h">
+      <Filter>inc\protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
