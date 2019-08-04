@@ -5,9 +5,14 @@
 class GameP :
 	public Iprotocol
 {
+	Ichannel* p_gameC = NULL;
+	Irole* p_gameR = NULL;
 public:
 	GameP();
 	virtual ~GameP();
+
+	void bindChannel(Ichannel * &&p_gameC) { this->p_gameC = p_gameC; }
+	void bindRole(Irole* &&p_gameR) { this->p_gameR = p_gameR; }
 
 	// Í¨¹ý Iprotocol ¼Ì³Ð
 	virtual UserData * raw2request(std::string _szInput) override;

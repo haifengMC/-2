@@ -42,6 +42,7 @@
     <ClCompile Include="src\protocol\GameMsg.cpp">
       <Filter>src\protocol</Filter>
     </ClCompile>
+    <ClCompile Include="src\channel\GameCF.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\channel\GameC.h">
@@ -56,5 +57,6 @@
     <ClInclude Include="inc\protocol\GameMsg.h">
       <Filter>inc\protocol</Filter>
     </ClInclude>
+    <ClInclude Include="inc\channel\GameCF.h" />
   </ItemGroup>
 </Project>

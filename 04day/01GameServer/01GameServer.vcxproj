@@ -82,6 +82,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="src\channel\GameC.cpp" />
+    <ClCompile Include="src\channel\GameCF.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\protocol\GameMsg.cpp" />
     <ClCompile Include="src\protocol\GameP.cpp" />
@@ -89,11 +90,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\channel\GameC.h" />
+    <ClInclude Include="inc\channel\GameCF.h" />
     <ClInclude Include="inc\protocol\GameMsg.h" />
     <ClInclude Include="inc\protocol\GameP.h" />
     <ClInclude Include="inc\role\GameR.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <LibraryDependencies>zinx</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
