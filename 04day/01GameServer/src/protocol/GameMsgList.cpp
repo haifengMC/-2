@@ -9,10 +9,10 @@ GameMsgList::GameMsgList()
 
 GameMsgList::~GameMsgList()
 {
-	//for (UserData* ud : gameMsgList)
-	//{
-	//	delete ud;
-	//}
+	for (UserData* ud : gameMsgList)
+	{
+		delete ud;
+	}
 }
 
 list<GameMsg*>::iterator GameMsgList::begin()
