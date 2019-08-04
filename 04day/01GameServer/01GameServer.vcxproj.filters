@@ -42,7 +42,12 @@
     <ClCompile Include="src\protocol\GameMsg.cpp">
       <Filter>src\protocol</Filter>
     </ClCompile>
-    <ClCompile Include="src\channel\GameCF.cpp" />
+    <ClCompile Include="src\channel\GameCF.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameMsgList.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\channel\GameC.h">
@@ -57,6 +62,11 @@
     <ClInclude Include="inc\protocol\GameMsg.h">
       <Filter>inc\protocol</Filter>
     </ClInclude>
-    <ClInclude Include="inc\channel\GameCF.h" />
+    <ClInclude Include="inc\channel\GameCF.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameMsgList.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

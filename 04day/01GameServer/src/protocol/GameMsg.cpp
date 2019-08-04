@@ -4,17 +4,26 @@
 
 
 
-GameMsg::GameMsg(MSG_TYPE msgType, string value) :
+GameMsg::GameMsg(MSG_TYPE msgType, const string &value) :
 	e_msgType(msgType), value(value)
 {
-	cout << value << endl;
 }
 
 GameMsg::~GameMsg()
 {
 }
 
-string GameMsg::serialize()
+GameMsg::MSG_TYPE & GameMsg::getId() const
 {
-	return "hello";
+	return e_msgType;
+}
+
+size_t GameMsg::getSize() const
+{
+	return value.size();
+}
+
+string& GameMsg::serialize() const
+{
+	return value;
 }

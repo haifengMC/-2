@@ -7,7 +7,7 @@ using namespace std;
 class GameMsg :
 	public UserData
 {
-	enum MSG_TYPE
+	mutable enum _MSG_TYPE
 	{
 		MSG_TYPE_LOGIN = 1,
 		MSG_TYPE_CHAT = 2,
@@ -16,11 +16,16 @@ class GameMsg :
 		MSG_TYPE_LOGOUT = 201,
 		MSG_TYPE_SRDPLYS_POS = 202
 	} e_msgType;
-	string value;
+	mutable string value;
 public:
-	GameMsg(MSG_TYPE msgType, string value);
+	typedef _MSG_TYPE MSG_TYPE;
+
+	GameMsg(MSG_TYPE msgType, const string &value);
 	virtual ~GameMsg();
 
-	string serialize();
+	MSG_TYPE& getId() const;
+	size_t getSize() const;
+	string& serialize() const;
+
 };
 

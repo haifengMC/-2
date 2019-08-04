@@ -7,6 +7,8 @@ class GameP :
 {
 	Ichannel* p_gameC = NULL;
 	Irole* p_gameR = NULL;
+
+	std::string rawSerialization;
 public:
 	GameP();
 	virtual ~GameP();

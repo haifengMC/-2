@@ -85,6 +85,7 @@
     <ClCompile Include="src\channel\GameCF.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\protocol\GameMsg.cpp" />
+    <ClCompile Include="src\protocol\GameMsgList.cpp" />
     <ClCompile Include="src\protocol\GameP.cpp" />
     <ClCompile Include="src\role\GameR.cpp" />
   </ItemGroup>
@@ -92,6 +93,7 @@
     <ClInclude Include="inc\channel\GameC.h" />
     <ClInclude Include="inc\channel\GameCF.h" />
     <ClInclude Include="inc\protocol\GameMsg.h" />
+    <ClInclude Include="inc\protocol\GameMsgList.h" />
     <ClInclude Include="inc\protocol\GameP.h" />
     <ClInclude Include="inc\role\GameR.h" />
   </ItemGroup>
