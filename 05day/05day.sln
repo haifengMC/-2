@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01protobuf测试", "01proto
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02protobuf游戏消息测试", "02protobuf游戏消息测试\02protobuf游戏消息测试.vcxproj", "{696D9F88-F2AF-460A-A21B-1A1CF1B4AE0C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03代理模式实现消息存储和操作", "03代理模式实现消息存储和操作\03代理模式实现消息存储和操作.vcxproj", "{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -51,6 +53,22 @@ Global
 		{696D9F88-F2AF-460A-A21B-1A1CF1B4AE0C}.Release|x64.Build.0 = Release|x64
 		{696D9F88-F2AF-460A-A21B-1A1CF1B4AE0C}.Release|x86.ActiveCfg = Release|x86
 		{696D9F88-F2AF-460A-A21B-1A1CF1B4AE0C}.Release|x86.Build.0 = Release|x86
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|ARM.ActiveCfg = Debug|ARM
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|ARM.Build.0 = Debug|ARM
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|ARM64.Build.0 = Debug|ARM64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|x64.ActiveCfg = Debug|x64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|x64.Build.0 = Debug|x64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|x86.ActiveCfg = Debug|x86
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Debug|x86.Build.0 = Debug|x86
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|ARM.ActiveCfg = Release|ARM
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|ARM.Build.0 = Release|ARM
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|ARM64.ActiveCfg = Release|ARM64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|ARM64.Build.0 = Release|ARM64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|x64.ActiveCfg = Release|x64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|x64.Build.0 = Release|x64
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|x86.ActiveCfg = Release|x86
+		{5EFE96AD-E627-4CB5-9D2F-0EA44C773532}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
