@@ -1,0 +1,13 @@
+//指定当前proto文件的语法是3系列版本
+syntax="proto3";
+
+//指定生成代码后，相关结构定义所在的命名空间
+package Test;
+
+//消息定义
+message Student
+{
+	 //数字1 2 是消息成员的序号，要求按顺序编排，若后续新增成员则序号依次递增
+	int32 no = 1;
+	string name = 2;
+}
