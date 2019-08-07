@@ -232,7 +232,7 @@ void BroadcastMsgF::getMsgData(const string & serialization, GameMsgData *& p_ga
 		break;
 	case 4:
 		{
-			p_broadcastData->data.actionData = p_broadcastMsg->actiondata;
+			p_broadcastData->data.actionData = p_broadcastMsg->actiondata();
 		}
 		break;
 	default:
