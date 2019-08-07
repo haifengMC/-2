@@ -23,6 +23,7 @@ private:
 	static map<int, GameMsgF**> msgFObj_map;
 };
 
+
 #define MSG_TYPE_CHAT 2
 class ChatMsgF : public GameMsgF
 {

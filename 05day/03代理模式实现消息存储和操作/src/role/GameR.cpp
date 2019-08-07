@@ -1,5 +1,7 @@
 #include "../../inc/role/GameR.h"
 #include "../../inc/protocol/GameMsgList.h"
+#include "../../inc/protocol/GameMsgF.h"
+
 #include <iostream>
 
 using namespace std;
@@ -23,14 +25,32 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 	GET_REF2DATA(GameMsgList, gameMsgList, _poUserData);
 	for (GameMsg* p_gm : gameMsgList)
 	{
-		cout <<
-			"lenth: " << p_gm->getSize() << " " <<
-			"ID: " << p_gm->getId() << " " <<
-			"value :" << ((ChatData*)p_gm->getMsgData())->content << endl;
-		
-		ChatData* p_cd = new ChatData;
-		p_cd->content = "hello";
-		GameMsg* p_sendGm = new GameMsg(MSG_TYPE_CHAT, p_cd);
+		GameMsgData* p_gmd = nullptr;
+		GameMsg* p_sendGm = nullptr;
+		switch (p_gm->getId())
+		{
+		case MSG_TYPE_CHAT:
+		{
+			if (nullptr == (p_gmd = p_gm->getMsgData()))
+			{
+				cout << "nullptr == p_gm->getMsgData()" << endl;
+				continue;
+			}
+			cout <<
+				"lenth: " << p_gm->getSize() << " " <<
+				"ID: " << p_gm->getId() << " " <<
+				"value :" << ((ChatData*)p_gmd)->content << endl;
+
+			ChatData* p_cd = new ChatData;
+			p_cd->content = "hello";
+			p_sendGm = new GameMsg(MSG_TYPE_CHAT, p_cd);
+		}
+			break;
+
+		default:
+			break;
+		}
+
 		ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
 	}
 

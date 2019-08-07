@@ -29,6 +29,7 @@ int & GameMsg::getId() const
 
 size_t GameMsg::getSize() const
 {
+	if ("" == value) value = getSerialization();
 	return value.size();
 }
 
@@ -48,8 +49,15 @@ GameMsgData *& GameMsg::getMsgData() const
 		delete p_gameMsgData;
 		p_gameMsgData = nullptr;
 	}
-	GameMsgF::getGameMsgF(e_msgType)->
-		getMsgData(value, p_gameMsgData);
-	
+	GameMsgF* p_gameMsgF = GameMsgF::getGameMsgF(e_msgType);
+	if (nullptr == p_gameMsgF)
+	{
+		delete p_gameMsgData;
+		p_gameMsgData = nullptr;
+
+		return p_gameMsgData;
+	}
+	p_gameMsgF->getMsgData(value, p_gameMsgData);
+
 	return p_gameMsgData;
 }
