@@ -191,12 +191,33 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 				cout <<
 					"周围玩家信息 :\n\t"
 					"lenth: " << p_gm->getSize() << "\n\t" <<
-					"ID: " << p_gm->getId() << "\n\t" <<
-					/*"plyrId: " << ((SyncPlyrsData*)p_gmd)->plyrId << "\n\t" <<
-					"usrName" << ((SyncPlyrsData*)p_gmd)->usrName <<*/ endl;
-				SyncPlyrsData* p_spid = new SyncPlyrsData;
+					"ID: " << p_gm->getId() << endl;
+				for (PlyrData& pd : ((SyncPlyrsData*)p_gmd)->plyrs)
+				{
+					cout << "\tplyrId: " << pd.plyrId << " " <<
+						"usrName: " << pd.usrName << "\n\t\t" <<
+						"Pos: (" <<
+						pd.plyrPos.X << ", " <<
+						pd.plyrPos.Y << ", " <<
+						pd.plyrPos.Z << ", " <<
+						pd.plyrPos.V << "\n\t\t" <<
+						"bloodValue" << pd.plyrPos.bloodValue << endl;
+				}
+				SyncPlyrsData* p_spd = new SyncPlyrsData;
 
-				p_sendGm = new GameMsg(MSG_TYPE_LOGIN, p_spid);
+				for (int i = 0; i < 2; i++)
+				{
+					PlyrData pd;
+					pd.plyrId = 300;
+					pd.plyrPos.X = 1.0;
+					pd.plyrPos.Y = 1.0;
+					pd.plyrPos.Z = 1.0;
+					pd.plyrPos.V = 1.0;
+					pd.plyrPos.bloodValue = 5;
+					p_spd->plyrs.push_back(pd);
+				}
+
+				p_sendGm = new GameMsg(MSG_TYPE_SRDPLYRS_POS, p_spd);
 			}
 			break;
 		default:
