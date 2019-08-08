@@ -37,7 +37,7 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					continue;
 				}
 				cout <<
-					"登录信息 :\n\t"
+					"login message :\n\t"
 					"lenth: " << p_gm->getSize() << "\n\t" <<
 					"ID: " << p_gm->getId() << "\n\t" <<
 					"plyrId: " << ((SyncPlyrIdData*)p_gmd)->plyrId << "\n\t" <<
@@ -56,7 +56,7 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					continue;
 				}
 				cout <<
-					"聊天信息 :\n\t"
+					"chat message :\n\t"
 					"lenth: " << p_gm->getSize() << "\n\t" <<
 					"ID: " << p_gm->getId() << "\n\t" <<
 					"content: " << ((ChatData*)p_gmd)->content << endl;
@@ -74,15 +74,15 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					continue;
 				}
 				cout <<
-					"坐标信息 :\n\t"
+					"new position message :\n\t"
 					"lenth: " << p_gm->getSize() << "\n\t" <<
 					"ID: " << p_gm->getId() << "\n\t" <<
 					"Pos: (" << 
 						((PlyrPosData*)p_gmd)->X << ", " <<
 						((PlyrPosData*)p_gmd)->Y << ", " <<
 						((PlyrPosData*)p_gmd)->Z << ", " <<
-						((PlyrPosData*)p_gmd)->V << "\n\t" <<
-					"bloodValue" << ((PlyrPosData*)p_gmd)->bloodValue << endl;
+						((PlyrPosData*)p_gmd)->V << ")\n\t" <<
+					"bloodValue: " << ((PlyrPosData*)p_gmd)->bloodValue << endl;
 				PlyrPosData* p_ppd = new PlyrPosData;
 				p_ppd->X = 1.0;
 				p_ppd->Y = 1.0;
@@ -101,7 +101,7 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					continue;
 				}
 				cout <<
-					"广播信息 :\n\t"
+					"broadcast message :\n\t"
 					"lenth: " << p_gm->getSize() << "\n\t" <<
 					"ID: " << p_gm->getId() << "\n\t" <<
 					"plyrId: " << ((BroadCastData*)p_gmd)->plyrId << "\n\t" <<
@@ -111,20 +111,24 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 				switch (((BroadCastData*)p_gmd)->bcType)
 				{
 				case 1:
-					cout << "\t聊天内容\n\t\t" <<
-						"content: " << ((BroadCastData*)p_gmd)->data.plyrChat.content << endl;
-					p_bcd->plyrId = 300;
-					p_bcd->usrName = "lulu";
-					p_bcd->bcType = 1;
-					p_bcd->data.plyrChat.content = "hello";
+					{
+						cout << "\tchat content: \n\t\t" <<
+							"content: " << ((BroadCastData*)p_gmd)->data.plyrChat.content << endl;
+						p_bcd->plyrId = 300;
+						p_bcd->usrName = "lulu";
+						p_bcd->bcType = 1;
+						p_bcd->data.plyrChat.content = "hello";
+					}
+	
+					break;
 				case 2:
-					cout << "\t出生位置\n\t\t" <<
+					cout << "\tbirth position: \n\t\t" <<
 						"Pos: (" <<
 						((BroadCastData*)p_gmd)->data.plyrPos.X << ", " <<
 						((BroadCastData*)p_gmd)->data.plyrPos.Y << ", " <<
 						((BroadCastData*)p_gmd)->data.plyrPos.Z << ", " <<
-						((BroadCastData*)p_gmd)->data.plyrPos.V << "\n\t\t" <<
-						"bloodValue" << ((PlyrPosData*)p_gmd)->bloodValue << endl;
+						((BroadCastData*)p_gmd)->data.plyrPos.V << ")\n\t\t" <<
+						"bloodValue: " << ((BroadCastData*)p_gmd)->data.plyrPos.bloodValue << endl;
 					p_bcd->plyrId = 300;
 					p_bcd->usrName = "lulu";
 					p_bcd->bcType = 2;
@@ -133,14 +137,16 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					p_bcd->data.plyrPos.Z = 1.0;
 					p_bcd->data.plyrPos.V = 1.0;
 					p_bcd->data.plyrPos.bloodValue = 5;
+					break;
 				case 3:	   
-					cout << "\t移动后的位置\n\t\t" <<
+					cout << "\tmove position\n\t\t" <<
 						"Pos: (" <<
 						((BroadCastData*)p_gmd)->data.plyrPos.X << ", " <<
 						((BroadCastData*)p_gmd)->data.plyrPos.Y << ", " <<
 						((BroadCastData*)p_gmd)->data.plyrPos.Z << ", " <<
-						((BroadCastData*)p_gmd)->data.plyrPos.V << "\n\t\t" <<
-						"bloodValue" << ((PlyrPosData*)p_gmd)->bloodValue << endl;
+						((BroadCastData*)p_gmd)->data.plyrPos.V << ")\n\t\t" <<
+						"bloodValue: " << 
+						((BroadCastData*)p_gmd)->data.plyrPos.bloodValue << endl;
 					p_bcd->plyrId = 300;
 					p_bcd->usrName = "lulu";
 					p_bcd->bcType = 3;
@@ -149,13 +155,15 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					p_bcd->data.plyrPos.Z = 2.0;
 					p_bcd->data.plyrPos.V = 2.0;
 					p_bcd->data.plyrPos.bloodValue = 5;
+					break;
 				case 4:
-					cout << "\t动作数据\n\t\t" <<
+					cout << "\taction data\n\t\t" <<
 						"actionData: " << ((BroadCastData*)p_gmd)->data.actionData << endl;
 					p_bcd->plyrId = 300;
 					p_bcd->usrName = "lulu";
 					p_bcd->bcType = 4;
 					p_bcd->data.actionData = 20;
+					break;
 				default:
 					break;
 				}
@@ -170,11 +178,11 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					continue;
 				}
 				cout <<
-					"登出信息 :\n\t"
+					"loginout message :\n\t"
 					"lenth: " << p_gm->getSize() << "\n\t" <<
 					"ID: " << p_gm->getId() << "\n\t" <<
 					"plyrId: " << ((SyncPlyrIdData*)p_gmd)->plyrId << "\n\t" <<
-					"usrName" << ((SyncPlyrIdData*)p_gmd)->usrName << endl;
+					"usrName: " << ((SyncPlyrIdData*)p_gmd)->usrName << endl;
 				SyncPlyrIdData* p_spid = new SyncPlyrIdData;
 				p_spid->plyrId = 30;
 				p_spid->usrName = "lulu";
@@ -189,19 +197,19 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 					continue;
 				}
 				cout <<
-					"周围玩家信息 :\n\t"
+					"suround plays message :\n\t"
 					"lenth: " << p_gm->getSize() << "\n\t" <<
 					"ID: " << p_gm->getId() << endl;
 				for (PlyrData& pd : ((SyncPlyrsData*)p_gmd)->plyrs)
 				{
-					cout << "\tplyrId: " << pd.plyrId << " " <<
+					cout << "\tplyrId: " << pd.plyrId << ";  " <<
 						"usrName: " << pd.usrName << "\n\t\t" <<
 						"Pos: (" <<
 						pd.plyrPos.X << ", " <<
 						pd.plyrPos.Y << ", " <<
 						pd.plyrPos.Z << ", " <<
-						pd.plyrPos.V << "\n\t\t" <<
-						"bloodValue" << pd.plyrPos.bloodValue << endl;
+						pd.plyrPos.V << ")\n\t\t" <<
+						"bloodValue: " << pd.plyrPos.bloodValue << endl;
 				}
 				SyncPlyrsData* p_spd = new SyncPlyrsData;
 
@@ -225,6 +233,7 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 		}
 
 		ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
+		//cout << "Zinx_SendOut OK" << endl;
 	}
 
 	return nullptr;

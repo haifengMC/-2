@@ -133,7 +133,7 @@ int main()
 
 
 		//200∫≈œ˚œ¢
-		enum { CHAT, POS, MOVE };
+		enum { CHAT = 1, POS, MOVE };
 		{
 			GameMsg::BroadCast broadcastChat;
 			broadcastChat.set_plyrid(100);

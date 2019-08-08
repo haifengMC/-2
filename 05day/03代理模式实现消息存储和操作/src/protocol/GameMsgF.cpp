@@ -310,7 +310,7 @@ void SrdPlyrsMsgF::getSerialization(GameMsgData * const & p_gameMsgData, string 
 void SrdPlyrsMsgF::getMsgData(const string & serialization, GameMsgData *& p_gameMsgData)
 {
 	delete p_gameMsgData;
-	p_gameMsgData = new SyncPlyrIdData;
+	p_gameMsgData = new SyncPlyrsData;
 	SyncPlyrsData* p_syncPlyrsData = dynamic_cast<SyncPlyrsData*>(p_gameMsgData);
 	GameMsg::SyncPlyrs* p_syncPlyrsMsg = dynamic_cast<GameMsg::SyncPlyrs*>(p_msg);
 
@@ -330,6 +330,7 @@ void SrdPlyrsMsgF::getMsgData(const string & serialization, GameMsgData *& p_gam
 
 		p_syncPlyrsData->plyrs.push_back(pd);
 	}
+	//cout << "SrdPlyrsMsgF::getMsgData OK" << endl;
 }
 
 SrdPlyrsMsgF* SrdPlyrsMsgF::p_srdPlyrsMsgF = new SrdPlyrsMsgF;

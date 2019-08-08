@@ -72,6 +72,9 @@ std::string * GameP::response2raw(UserData & _oUserData)
 
 	rawSerialization->append(gameMsg.getSerialization());
 
+	//for (unsigned char c : *rawSerialization)printf("%02X ", c);
+	//cout << endl;
+
 	return rawSerialization;
 }
 

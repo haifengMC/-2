@@ -43,11 +43,9 @@ struct BroadCastData : GameMsgData
 	//广播类型，1、聊天内容；2、出生位置；3、移动后的位置
 	int bcType;
 
-	//一个共用体数据
-	union Data
+	//一个共用体数据err
+	struct Data
 	{
-		Data() {}
-		~Data() {}
 		ChatData plyrChat;
 		PlyrPosData plyrPos;
 		//actionData暂时预留动作数据
