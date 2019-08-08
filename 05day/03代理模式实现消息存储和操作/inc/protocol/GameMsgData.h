@@ -44,7 +44,7 @@ struct BroadCastData : GameMsgData
 	int bcType;
 
 	//一个共用体数据err
-	struct Data
+	struct 
 	{
 		ChatData plyrChat;
 		PlyrPosData plyrPos;
