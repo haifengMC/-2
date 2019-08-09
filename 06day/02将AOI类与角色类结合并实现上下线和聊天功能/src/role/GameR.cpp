@@ -351,6 +351,18 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 
 void GameR::Fini()
 {
+	for (AOIGrid* const& p_grid : s_AOIworld.getSrdPlyrs(*this))
+	{
+		for (AOIObj* const &p_plyr : *p_grid)
+		{
+			SyncPlyrIdData* p_spid = new SyncPlyrIdData;
+			p_spid->plyrId = getPlyrId();
+			p_spid->usrName = getUsrName();
+			GameMsg* p_sendGm = new GameMsg(MSG_TYPE_LOGOUT, p_spid);
+			ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
+		}
+	}
+
 	s_AOIworld.delPlyr(*this);
 }
 
