@@ -4,6 +4,12 @@ GameMsgData::~GameMsgData()
 {
 }
 
+
+SyncPlyrIdData::SyncPlyrIdData(const int & plyrId, const string & usrName) :
+	plyrId(plyrId), usrName(usrName)
+{
+}
+
 SyncPlyrIdData::~SyncPlyrIdData()
 {
 }

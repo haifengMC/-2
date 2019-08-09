@@ -12,6 +12,8 @@ int main()
 
 		ZinxKernel::Zinx_Run();
 
+		ZinxKernel::Zinx_Del_Channel(*p_gameC);
+		delete(p_gameC);
 		ZinxKernel::ZinxKernelFini();
 	}
 

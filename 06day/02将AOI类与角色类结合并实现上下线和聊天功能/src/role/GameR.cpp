@@ -6,8 +6,51 @@
 
 using namespace std;
 
+static AOI s_AOIworld;
+static list<SyncPlyrIdData> s_pidList =
+{
+	//{1, "海风"},
+	//{2, "华夏"},
+	//{3, "如戏"},
+	//{4, "凌子风"},
+	//{5, "糖宝"},
+	//{6, "凡凡"},
+	//{7, "TSY369"},
+	//{8, "崔琪贤"},
+	//{9, "VI8"},
+	//{10, "火麒麟"},
+	//{11, "晨曦"},
+	//{12, "铁链"}
+	{1, "haifeng"},
+	{2, "huaxia"},
+	{3, "ruxi"},
+	{4, "lingzifeng"},
+	{5, "dixxo"},
+	{6, "fanfan"},
+	{7, "TSY369"},
+	{8, "cuiqixian"},
+	{9, "VI8"},
+	{10, "huoqiling"},
+	{11, "laowang"},
+	{12, "tieliang"}
+};
+static list<SyncPlyrIdData>::iterator s_pidListIt = s_pidList.begin();
+
 GameR::GameR()
 {
+	plyrPosData.X = 100;
+	plyrPosData.Y = 0;
+	plyrPosData.Z = 100;
+	plyrPosData.V = 0;
+	plyrPosData.bloodValue = 5;
+
+	if (s_pidList.end() != s_pidListIt)
+	{
+		plyrData.plyrId = s_pidListIt->plyrId;
+		plyrData.usrName = s_pidListIt->usrName;
+
+		++s_pidListIt;
+	}
 }
 
 
@@ -15,9 +58,76 @@ GameR::~GameR()
 {
 }
 
+const int & GameR::getPlyrId() const
+{
+	return plyrData.plyrId;
+}
+
+const string & GameR::getUsrName() const
+{
+	return plyrData.usrName;
+}
+
+const PlyrPosData & GameR::getPlyrPos() const
+{
+	return plyrPosData;
+}
+
+Iprotocol * const & GameR::getProtocol() const
+{
+	return p_gameP;
+}
+
 bool GameR::Init()
 {
-	return false;
+	s_AOIworld.addPlyr(*this);
+	GameMsg* p_sendGm = nullptr;
+
+	//向其发送ID和名称
+	SyncPlyrIdData* p_spid = new SyncPlyrIdData;
+
+	p_spid->plyrId = getPlyrId();
+	p_spid->usrName = getUsrName();
+
+	p_sendGm = new GameMsg(MSG_TYPE_LOGIN, p_spid);
+	ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
+
+	list<AOIGrid*> gridList = s_AOIworld.getSrdPlyrs(*this);
+	//向其发送周围玩家的位置
+	SyncPlyrsData* p_spd = new SyncPlyrsData;
+	for (AOIGrid * const& p_grid : gridList)
+		for (AOIObj* const& p_plyr: *p_grid)
+		{
+			//if (((GameR*)p_plyr)->getPlyrId() == this->getPlyrId()) continue;
+			PlyrData pd;
+
+			pd.plyrId = ((GameR*)p_plyr)->getPlyrId();
+			pd.usrName = ((GameR*)p_plyr)->getUsrName();
+			pd.plyrPos.X = ((GameR*)p_plyr)->getPlyrPos().X;
+			pd.plyrPos.Y = ((GameR*)p_plyr)->getPlyrPos().Y;
+			pd.plyrPos.Z = ((GameR*)p_plyr)->getPlyrPos().Z;
+			pd.plyrPos.V = ((GameR*)p_plyr)->getPlyrPos().V;
+			pd.plyrPos.bloodValue = ((GameR*)p_plyr)->getPlyrPos().bloodValue;
+			p_spd->plyrs.push_back(pd);
+
+			//向周围玩家广播自己位置
+			BroadCastData* p_bcd = new BroadCastData;
+			p_bcd->plyrId = getPlyrId();
+			p_bcd->usrName = getUsrName();
+			p_bcd->bcType = 2;
+			p_bcd->data.plyrPos.X = getPlyrPos().X;
+			p_bcd->data.plyrPos.Y = getPlyrPos().Y;
+			p_bcd->data.plyrPos.Z = getPlyrPos().Z;
+			p_bcd->data.plyrPos.V = getPlyrPos().V;
+			p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
+			p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
+			ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
+		}
+	p_sendGm = new GameMsg(MSG_TYPE_SRDPLYRS_POS, p_spd);
+	ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
+	
+				
+	return true;
 }
 
 UserData * GameR::ProcMsg(UserData & _poUserData)
@@ -241,4 +351,16 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 
 void GameR::Fini()
 {
+	s_AOIworld.delPlyr(*this);
 }
+
+float & GameR::getX() const
+{
+	return plyrPosData.X;
+}
+
+float & GameR::getY() const
+{
+	return plyrPosData.Z;
+}
+

@@ -13,6 +13,7 @@ struct GameMsgData
 //1号消息或201号消息，客户端记录自己ID和姓名，或将该ID从画面中拿掉
 struct SyncPlyrIdData : GameMsgData
 {
+	SyncPlyrIdData(const int& plyrId = 0, const string& usrName = "游客");
 	virtual ~SyncPlyrIdData() override;
 	int plyrId;
 	string usrName;
@@ -38,7 +39,7 @@ struct PlyrPosData : GameMsgData
 //200号消息
 struct BroadCastData : GameMsgData
 {
-	~BroadCastData() override;
+	virtual ~BroadCastData() override;
 	int plyrId;
 	//广播类型，1、聊天内容；2、出生位置；3、移动后的位置
 	int bcType;

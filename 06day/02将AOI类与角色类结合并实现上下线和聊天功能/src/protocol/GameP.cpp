@@ -10,6 +10,8 @@ GameP::GameP()
 
 GameP::~GameP()
 {
+	ZinxKernel::Zinx_Del_Role(*p_gameR);
+	delete(p_gameR);
 }
 
 UserData * GameP::raw2request(std::string _szInput)
