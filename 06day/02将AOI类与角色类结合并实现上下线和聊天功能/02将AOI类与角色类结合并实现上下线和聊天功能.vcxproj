@@ -59,6 +59,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>~/c++/09项目二/06day</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -74,9 +75,44 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)bin</OutDir>
+    <IntDir>$(ProjectDir)obj</IntDir>
+    <TargetExt />
+  </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="inc\AOI.h" />
+    <ClInclude Include="inc\channel\GameC.h" />
+    <ClInclude Include="inc\channel\GameCF.h" />
+    <ClInclude Include="inc\protocol\GameMsg.h" />
+    <ClInclude Include="inc\protocol\GameMsg.protoc.pb.h" />
+    <ClInclude Include="inc\protocol\GameMsgData.h" />
+    <ClInclude Include="inc\protocol\GameMsgF.h" />
+    <ClInclude Include="inc\protocol\GameMsgList.h" />
+    <ClInclude Include="inc\protocol\GameP.h" />
+    <ClInclude Include="inc\role\GameR.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemGroup>
+    <ClCompile Include="src\AOI.cpp" />
+    <ClCompile Include="src\channel\GameC.cpp" />
+    <ClCompile Include="src\channel\GameCF.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\protocol\GameMsg.cpp" />
+    <ClCompile Include="src\protocol\GameMsg.protoc.pb.cc" />
+    <ClCompile Include="src\protocol\GameMsgData.cpp" />
+    <ClCompile Include="src\protocol\GameMsgF.cpp" />
+    <ClCompile Include="src\protocol\GameMsgList.cpp" />
+    <ClCompile Include="src\protocol\GameP.cpp" />
+    <ClCompile Include="src\role\GameR.cpp" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>-pthread</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>zinx;protobuf;pthread;%(LibraryDependencies)</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
