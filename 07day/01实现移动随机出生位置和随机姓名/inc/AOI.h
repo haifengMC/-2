@@ -9,6 +9,7 @@ using namespace std;
 
 struct AOIObj
 {
+	virtual void setXY(const float& x, const float& y) = 0;
 	virtual float& getX() const = 0;
 	virtual float& getY() const = 0;
 };
@@ -18,6 +19,9 @@ class AOIGrid
 	int x, y;
 public:
 	AOIGrid(const int& x, const int& y);
+
+	int& getX();
+	int& getY();
 
 	void addObj(AOIObj* const& obj) const;
 	void delObj(AOIObj* const& obj) const;
@@ -53,6 +57,13 @@ public:
 
 	//获取周围玩家
 	list<AOIGrid*> getSrdPlyrs(const AOIObj& plyr);
+	//玩家位置移动后，更新周围玩家
+	void upDateSrdPlyrs(AOIObj& plyr, 
+		const float& x, const float& y, 
+		list<AOIGrid*> &oldGridList, 
+		list<AOIGrid*> &unaltGridList,
+		list<AOIGrid*> &newGridList);
+
 	//添加玩家
 	void addPlyr(AOIObj& plyr);
 	//删除玩家
@@ -60,5 +71,7 @@ public:
 private:
 	int getGridPosX(const float& x);
 	int getGridPosY(const float& y);
+
+	int getAbs(const int& n);
 };
 

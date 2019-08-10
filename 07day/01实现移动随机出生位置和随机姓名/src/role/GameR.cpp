@@ -191,11 +191,96 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 			break;
 		case MSG_TYPE_NEW_POS:
 			{
-		//		if (nullptr == (p_gmd = p_gm->getMsgData()))
-		//		{
-		//			cout << "nullptr == p_gm->getMsgData()" << endl;
-		//			continue;
-		//		}
+				if (nullptr == (p_gmd = p_gm->getMsgData()))
+				{
+					cout << "nullptr == p_gm->getMsgData()" << endl;
+					continue;
+				}
+				//给旧的周围玩家发送下线消息
+				list<AOIGrid*> oldGrid, unaltGrid, newGrid;
+				s_AOIworld.upDateSrdPlyrs(*this, 
+					((PlyrPosData*)p_gmd)->X, ((PlyrPosData*)p_gmd)->Y,
+					oldGrid, unaltGrid, newGrid);
+				for (AOIGrid * const &p_grid : oldGrid)
+				{
+					for (AOIObj* const& p_plyr : *p_grid)
+					{
+						SyncPlyrIdData* p_spid = new SyncPlyrIdData;
+						p_spid->plyrId = getPlyrId();
+						p_spid->usrName = getUsrName();
+						p_sendGm = new GameMsg(MSG_TYPE_LOGOUT, p_spid);
+						ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
+						p_spid = new SyncPlyrIdData;
+						p_spid->plyrId = ((GameR*)p_plyr)->getPlyrId();
+						p_spid->usrName = ((GameR*)p_plyr)->getUsrName();
+						p_sendGm = new GameMsg(MSG_TYPE_LOGOUT, p_spid);
+						ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
+					}
+				}
+				for (AOIGrid * const &p_grid : newGrid)
+				{
+					for (AOIObj* const& p_plyr : *p_grid)
+					{
+						BroadCastData* p_bcd = new BroadCastData;
+						p_bcd->plyrId = getPlyrId();
+						p_bcd->usrName = getUsrName();
+						p_bcd->bcType = 2;
+						p_bcd->data.plyrPos.X = getPlyrPos().X;
+						p_bcd->data.plyrPos.Y = getPlyrPos().Y;
+						p_bcd->data.plyrPos.Z = getPlyrPos().Z;
+						p_bcd->data.plyrPos.V = getPlyrPos().V;
+						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
+
+						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
+						ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
+
+						p_bcd = new BroadCastData;
+						p_bcd->plyrId = ((GameR*)p_plyr)->getPlyrId();
+						p_bcd->usrName = ((GameR*)p_plyr)->getUsrName();
+						p_bcd->bcType = 2;
+						p_bcd->data.plyrPos.X = ((GameR*)p_plyr)->getPlyrPos().X;
+						p_bcd->data.plyrPos.Y = ((GameR*)p_plyr)->getPlyrPos().Y;
+						p_bcd->data.plyrPos.Z = ((GameR*)p_plyr)->getPlyrPos().Z;
+						p_bcd->data.plyrPos.V = ((GameR*)p_plyr)->getPlyrPos().V;
+						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
+
+						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
+						ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
+					}
+				}
+				for (AOIGrid * const &p_grid : unaltGrid)
+				{
+					for (AOIObj* const& p_plyr : *p_grid)
+					{
+						BroadCastData* p_bcd = new BroadCastData;
+						p_bcd->plyrId = getPlyrId();
+						p_bcd->usrName = getUsrName();
+						p_bcd->bcType = 3;
+						p_bcd->data.plyrPos.X = getPlyrPos().X;
+						p_bcd->data.plyrPos.Y = getPlyrPos().Y;
+						p_bcd->data.plyrPos.Z = getPlyrPos().Z;
+						p_bcd->data.plyrPos.V = getPlyrPos().V;
+						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
+
+						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
+						ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
+
+						p_bcd = new BroadCastData;
+						p_bcd->plyrId = ((GameR*)p_plyr)->getPlyrId();
+						p_bcd->usrName = ((GameR*)p_plyr)->getUsrName();
+						p_bcd->bcType = 3;
+						p_bcd->data.plyrPos.X = ((GameR*)p_plyr)->getPlyrPos().X;
+						p_bcd->data.plyrPos.Y = ((GameR*)p_plyr)->getPlyrPos().Y;
+						p_bcd->data.plyrPos.Z = ((GameR*)p_plyr)->getPlyrPos().Z;
+						p_bcd->data.plyrPos.V = ((GameR*)p_plyr)->getPlyrPos().V;
+						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
+
+						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
+						ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
+					}
+				}
+				
+
 		//		cout <<
 		//			"new position message :\n\t"
 		//			"lenth: " << p_gm->getSize() << "\n\t" <<
