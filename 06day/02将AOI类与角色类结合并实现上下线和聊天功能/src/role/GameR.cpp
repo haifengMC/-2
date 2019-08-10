@@ -123,6 +123,7 @@ bool GameR::Init()
 			p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
 			ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
 		}
+
 	p_sendGm = new GameMsg(MSG_TYPE_SRDPLYRS_POS, p_spd);
 	ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
 	

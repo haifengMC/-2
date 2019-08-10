@@ -291,7 +291,9 @@ void SrdPlyrsMsgF::getSerialization(GameMsgData * const & p_gameMsgData, string 
 {
 	SyncPlyrsData* p_syncPlyrsData = dynamic_cast<SyncPlyrsData*>(p_gameMsgData);
 	GameMsg::SyncPlyrs* p_syncPlyrsMsg = dynamic_cast<GameMsg::SyncPlyrs*>(p_msg);
-	
+	p_msg->Clear();
+	serialization.clear();
+
 	for (PlyrData& pd : p_syncPlyrsData->plyrs)
 	{
 		GameMsg::Plyr* p_plyr = p_syncPlyrsMsg->add_plyrs();
@@ -305,6 +307,7 @@ void SrdPlyrsMsgF::getSerialization(GameMsgData * const & p_gameMsgData, string 
 		p_plyrPos->set_bloodvalue(pd.plyrPos.bloodValue);
 	}
 	p_syncPlyrsMsg->SerializePartialToString(&serialization);
+
 }
 
 void SrdPlyrsMsgF::getMsgData(const string & serialization, GameMsgData *& p_gameMsgData)
@@ -330,7 +333,6 @@ void SrdPlyrsMsgF::getMsgData(const string & serialization, GameMsgData *& p_gam
 
 		p_syncPlyrsData->plyrs.push_back(pd);
 	}
-	//cout << "SrdPlyrsMsgF::getMsgData OK" << endl;
 }
 
 SrdPlyrsMsgF* SrdPlyrsMsgF::p_srdPlyrsMsgF = new SrdPlyrsMsgF;
