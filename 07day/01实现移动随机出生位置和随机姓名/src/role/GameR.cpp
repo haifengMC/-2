@@ -546,3 +546,9 @@ float & GameR::getY() const
 	return plyrPosData.Z;
 }
 
+void GameR::setXY(const float & x, const float & y)
+{
+	plyrPosData.X = x;
+	plyrPosData.Y = y;
+}
+

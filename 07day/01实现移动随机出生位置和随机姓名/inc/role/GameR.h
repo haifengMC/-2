@@ -33,7 +33,10 @@ public:
 	// Í¨¹ý AOIObj ¼Ì³Ð
 	virtual float & getX() const override;
 	virtual float & getY() const override;
+	virtual void setXY(const float & x, const float & y) override;
 private:
+
+
 };
 
 
