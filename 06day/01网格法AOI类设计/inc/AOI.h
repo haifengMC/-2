@@ -46,6 +46,11 @@ public:
 	AOI(int x = 0, int y = 0, size_t gridSize = GRID_SIZE_DEFAULT);
 	virtual ~AOI();
 
+	set<AOIGrid>::iterator begin();
+	set<AOIGrid>::iterator end();
+	set<AOIGrid>::const_iterator cbegin() const;
+	set<AOIGrid>::const_iterator cend() const;
+
 	//获取周围玩家
 	list<AOIGrid*> getSrdPlyrs(const AOIObj& plyr);
 	//添加玩家

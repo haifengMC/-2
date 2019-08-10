@@ -68,6 +68,26 @@ AOI::~AOI()
 {
 }
 
+set<AOIGrid>::iterator AOI::begin()
+{
+	return grid_set.begin();
+}
+
+set<AOIGrid>::iterator AOI::end()
+{
+	return grid_set.end();
+}
+
+set<AOIGrid>::const_iterator AOI::cbegin() const
+{
+	return grid_set.cbegin();
+}
+
+set<AOIGrid>::const_iterator AOI::cend() const
+{
+	return grid_set.cend();
+}
+
 list<AOIGrid*> AOI::getSrdPlyrs(const AOIObj & plyr)
 {
 	list<AOIGrid*> ret;
