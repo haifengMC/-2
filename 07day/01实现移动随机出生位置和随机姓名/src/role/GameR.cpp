@@ -198,9 +198,17 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 				}
 				//给旧的周围玩家发送下线消息
 				list<AOIGrid*> oldGrid, unaltGrid, newGrid;
+
 				s_AOIworld.upDateSrdPlyrs(*this, 
-					((PlyrPosData*)p_gmd)->X, ((PlyrPosData*)p_gmd)->Y,
+					((PlyrPosData*)p_gmd)->X, ((PlyrPosData*)p_gmd)->Z,
 					oldGrid, unaltGrid, newGrid);
+
+				plyrPosData.Y = ((PlyrPosData*)p_gmd)->Y;
+				plyrPosData.V = ((PlyrPosData*)p_gmd)->V;
+				plyrPosData.bloodValue = 
+					((PlyrPosData*)p_gmd)->bloodValue;
+
+				
 				for (AOIGrid * const &p_grid : oldGrid)
 				{
 					for (AOIObj* const& p_plyr : *p_grid)
@@ -217,6 +225,8 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 						ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
 					}
 				}
+
+				
 				for (AOIGrid * const &p_grid : newGrid)
 				{
 					for (AOIObj* const& p_plyr : *p_grid)
@@ -233,7 +243,7 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 
 						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
 						ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
-
+		
 						p_bcd = new BroadCastData;
 						p_bcd->plyrId = ((GameR*)p_plyr)->getPlyrId();
 						p_bcd->usrName = ((GameR*)p_plyr)->getUsrName();
@@ -242,16 +252,21 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 						p_bcd->data.plyrPos.Y = ((GameR*)p_plyr)->getPlyrPos().Y;
 						p_bcd->data.plyrPos.Z = ((GameR*)p_plyr)->getPlyrPos().Z;
 						p_bcd->data.plyrPos.V = ((GameR*)p_plyr)->getPlyrPos().V;
-						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
+						p_bcd->data.plyrPos.bloodValue = ((GameR*)p_plyr)->getPlyrPos().bloodValue;
 
 						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
 						ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
 					}
 				}
+
 				for (AOIGrid * const &p_grid : unaltGrid)
 				{
 					for (AOIObj* const& p_plyr : *p_grid)
 					{
+						cout << "unatlGrid:\n" <<
+							((GameR*)p_plyr)->getPlyrId() << " : " <<
+							((GameR*)p_plyr)->getUsrName() << endl;
+
 						BroadCastData* p_bcd = new BroadCastData;
 						p_bcd->plyrId = getPlyrId();
 						p_bcd->usrName = getUsrName();
@@ -262,43 +277,16 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 						p_bcd->data.plyrPos.V = getPlyrPos().V;
 						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
 
+						cout << "move position: \n\tPos: (" <<
+							p_bcd->data.plyrPos.X << ", " <<
+							p_bcd->data.plyrPos.Y << ", " <<
+							p_bcd->data.plyrPos.Z << ", " <<
+							p_bcd->data.plyrPos.V << ")\n\t\t" <<
+							"bloodValue: " << p_bcd->data.plyrPos.bloodValue << endl;
 						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
 						ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
-
-						p_bcd = new BroadCastData;
-						p_bcd->plyrId = ((GameR*)p_plyr)->getPlyrId();
-						p_bcd->usrName = ((GameR*)p_plyr)->getUsrName();
-						p_bcd->bcType = 3;
-						p_bcd->data.plyrPos.X = ((GameR*)p_plyr)->getPlyrPos().X;
-						p_bcd->data.plyrPos.Y = ((GameR*)p_plyr)->getPlyrPos().Y;
-						p_bcd->data.plyrPos.Z = ((GameR*)p_plyr)->getPlyrPos().Z;
-						p_bcd->data.plyrPos.V = ((GameR*)p_plyr)->getPlyrPos().V;
-						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
-
-						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
-						ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
 					}
 				}
-				
-
-		//		cout <<
-		//			"new position message :\n\t"
-		//			"lenth: " << p_gm->getSize() << "\n\t" <<
-		//			"ID: " << p_gm->getId() << "\n\t" <<
-		//			"Pos: (" << 
-		//				((PlyrPosData*)p_gmd)->X << ", " <<
-		//				((PlyrPosData*)p_gmd)->Y << ", " <<
-		//				((PlyrPosData*)p_gmd)->Z << ", " <<
-		//				((PlyrPosData*)p_gmd)->V << ")\n\t" <<
-		//			"bloodValue: " << ((PlyrPosData*)p_gmd)->bloodValue << endl;
-		//		PlyrPosData* p_ppd = new PlyrPosData;
-		//		p_ppd->X = 1.0;
-		//		p_ppd->Y = 1.0;
-		//		p_ppd->Z = 1.0;
-		//		p_ppd->V = 1.0;
-		//		p_ppd->bloodValue = 5;
-
-		//		p_sendGm = new GameMsg(MSG_TYPE_NEW_POS, p_ppd);
 			}
 			break;
 		case MSG_TYPE_BROADCAST:
@@ -549,6 +537,6 @@ float & GameR::getY() const
 void GameR::setXY(const float & x, const float & y)
 {
 	plyrPosData.X = x;
-	plyrPosData.Y = y;
+	plyrPosData.Z = y;
 }
 

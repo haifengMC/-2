@@ -139,6 +139,12 @@ void AOI::upDateSrdPlyrs(AOIObj& plyr,
 	int oldY = getGridPosY(plyr.getY());
 	int newX = getGridPosX(x);
 	int newY = getGridPosY(y);
+	//cout << "old(" <<
+	//	plyr.getX() << "[" << oldX << "], " <<
+	//	plyr.getY() << "[" << oldY << "])" << endl;
+	//cout << "new(" <<
+	//	x << "[" << newX << "], " <<
+	//	y << "[" << newY << "])" << endl;
 
 	oldGridList.clear();
 	unaltGridList.clear();
@@ -146,8 +152,17 @@ void AOI::upDateSrdPlyrs(AOIObj& plyr,
 	
 	if (oldX == newX && oldY == newY)
 	{
+		//cout << "oldX == newX && oldY == newY" << endl;
+		//cout << "old(" <<
+		//	plyr.getX() << "[" << oldX << "], " <<
+		//	plyr.getY() << "[" << oldY << "])" << endl;
+		//cout << "new(" <<
+		//	x << "[" << newX << "], " <<
+		//	y << "[" << newY << "])" << endl;
 		plyr.setXY(x, y);
 		unaltGridList = getSrdPlyrs(plyr);
+
+		return;
 	}
 
 	if (getAbs(newX - oldX) > 2 || getAbs(newY - oldY) > 2)
@@ -157,6 +172,8 @@ void AOI::upDateSrdPlyrs(AOIObj& plyr,
 		plyr.setXY(x, y);
 		addPlyr(plyr);
 		newGridList = getSrdPlyrs(plyr);
+
+		return;
 	}
 
 	/*
@@ -410,7 +427,7 @@ void AOI::upDateSrdPlyrs(AOIObj& plyr,
 				}
 				break;
 			default:
-				cout << "error" << endl;
+				//cout << "error : " << newX - oldX << newY - oldY << endl;
 				break;
 			}
 		}
