@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <random>
+#include <iconv.h>
 
 using namespace std;
 
@@ -11,32 +12,34 @@ static default_random_engine s_randEngne(time(NULL));
 static AOI s_AOIworld;
 static list<SyncPlyrIdData> s_pidList =
 {
-	//{1, "º£·ç"},
-	//{2, "»ªÏÄ"},
-	//{3, "ÈçÏ·"},
-	//{4, "Áè×Ó·ç"},
-	//{5, "ÌÇ±¦"},
-	//{6, "·²·²"},
-	//{7, "TSY369"},
-	//{8, "´Þç÷ÏÍ"},
-	//{9, "VI8"},
-	//{10, "»ð÷è÷ë"},
-	//{11, "³¿êØ"},
-	//{12, "ÌúÁ´"}
-	{1, "haifeng"},
-	{2, "huaxia"},
-	{3, "ruxi"},
-	{4, "lingzifeng"},
-	{5, "didiowhx"},
-	{6, "fanfan"},
+	{1, "º£·ç"},
+	{2, "»ªÏÄ"},
+	{3, "ÈçÏ·"},
+	{4, "Áè×Ó·ç"},
+	{5, "ÌÇ±¦"},
+	{6, "·²·²"},
 	{7, "TSY369"},
-	{8, "cuiqixian"},
+	{8, "´Þç÷ÏÍ"},
 	{9, "VI8"},
-	{10, "huoqiling"},
-	{11, "laowang"},
-	{12, "tieliang"}
+	{10, "»ð÷è÷ë"},
+	{11, "³¿êØ"},
+	{12, "ÌúÁ´"}
+	//{1, "haifeng"},
+	//{2, "huaxia"},
+	//{3, "ruxi"},
+	//{4, "lingzifeng"},
+	//{5, "didiowhx"},
+	//{6, "fanfan"},
+	//{7, "TSY369"},
+	//{8, "cuiqixian"},
+	//{9, "VI8"},
+	//{10, "huoqiling"},
+	//{11, "laowang"},
+	//{12, "tieliang"}
 };
 static list<SyncPlyrIdData>::iterator s_pidListIt = s_pidList.begin();
+
+
 
 GameR::GameR()
 {
@@ -50,6 +53,7 @@ GameR::GameR()
 	{
 		plyrData.plyrId = s_pidListIt->plyrId;
 		plyrData.usrName = s_pidListIt->usrName;
+		convG2U(plyrData.usrName);
 
 		++s_pidListIt;
 	}
@@ -265,9 +269,9 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 				{
 					for (AOIObj* const& p_plyr : *p_grid)
 					{
-						cout << "unatlGrid:\n" <<
-							((GameR*)p_plyr)->getPlyrId() << " : " <<
-							((GameR*)p_plyr)->getUsrName() << endl;
+						//cout << "unatlGrid:\n" <<
+						//	((GameR*)p_plyr)->getPlyrId() << " : " <<
+						//	((GameR*)p_plyr)->getUsrName() << endl;
 
 						BroadCastData* p_bcd = new BroadCastData;
 						p_bcd->plyrId = getPlyrId();
@@ -279,12 +283,12 @@ UserData * GameR::ProcMsg(UserData & _poUserData)
 						p_bcd->data.plyrPos.V = getPlyrPos().V;
 						p_bcd->data.plyrPos.bloodValue = getPlyrPos().bloodValue;
 
-						cout << "move position: \n\tPos: (" <<
-							p_bcd->data.plyrPos.X << ", " <<
-							p_bcd->data.plyrPos.Y << ", " <<
-							p_bcd->data.plyrPos.Z << ", " <<
-							p_bcd->data.plyrPos.V << ")\n\t\t" <<
-							"bloodValue: " << p_bcd->data.plyrPos.bloodValue << endl;
+						//cout << "move position: \n\tPos: (" <<
+						//	p_bcd->data.plyrPos.X << ", " <<
+						//	p_bcd->data.plyrPos.Y << ", " <<
+						//	p_bcd->data.plyrPos.Z << ", " <<
+						//	p_bcd->data.plyrPos.V << ")\n\t\t" <<
+						//	"bloodValue: " << p_bcd->data.plyrPos.bloodValue << endl;
 						p_sendGm = new GameMsg(MSG_TYPE_BROADCAST, p_bcd);
 						ZinxKernel::Zinx_SendOut(*p_sendGm, *((GameR*)p_plyr)->getProtocol());
 					}
@@ -540,5 +544,45 @@ void GameR::setXY(const float & x, const float & y)
 {
 	plyrPosData.X = x;
 	plyrPosData.Z = y;
+}
+
+
+char* const& GameR::convG2U(string & strBuf)
+{
+	codeConvert("gb2312", "utf-8", 
+		strBuf.data(), strBuf.size(), convertBuf, sizeof(convertBuf));
+	strBuf = convertBuf;
+	return convertBuf;
+}
+
+char * const & GameR::convG2U(const char * const & c_str)
+{
+	codeConvert("gb2312", "utf-8",
+		c_str, strlen(c_str), convertBuf, sizeof(convertBuf));
+	return convertBuf;
+}
+
+int GameR::codeConvert(
+	const char *const &from_charset,
+	const char *const &to_charset,
+	const char *const &inbuf,
+	const size_t &inlen,
+	char *const &outbuf,
+	const size_t &outlen)
+{
+	iconv_t cd;
+	char **pin = (char**)&inbuf;
+	char **pout = (char**)&outbuf;
+
+	cd = iconv_open(to_charset, from_charset);
+	if (cd == 0)
+		return -1;
+	memset(outbuf, 0, outlen);
+	if (iconv(cd, pin, (size_t*)&inlen, pout, (size_t*)&outlen) == -1)
+		return -1;
+	iconv_close(cd);
+	(*pout)[outlen - 1] = '\0';
+
+	return 0;
 }
 

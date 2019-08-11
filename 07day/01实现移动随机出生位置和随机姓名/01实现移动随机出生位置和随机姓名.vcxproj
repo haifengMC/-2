@@ -107,7 +107,7 @@
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalOptions>-pthread</AdditionalOptions>
+      <AdditionalOptions>-pthread </AdditionalOptions>
     </ClCompile>
     <Link>
       <LibraryDependencies>zinx;protobuf;pthread;%(LibraryDependencies)</LibraryDependencies>

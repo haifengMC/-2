@@ -35,7 +35,17 @@ public:
 	virtual float & getY() const override;
 	virtual void setXY(const float & x, const float & y) override;
 private:
+	char convertBuf[64];
 
+	char* const& convG2U(string& strBuf);
+	char* const& convG2U(const char* const& c_str);
+	int codeConvert(
+		const char *const &from_charset, 
+		const char *const &to_charset, 
+		const char *const &inbuf, 
+		const size_t &inlen, 
+		char *const &outbuf, 
+		const size_t &outlen);
 
 };
 
