@@ -3,9 +3,11 @@
 #include "../../inc/protocol/GameMsgF.h"
 
 #include <iostream>
+#include <random>
 
 using namespace std;
 
+static default_random_engine s_randEngne(time(NULL));
 static AOI s_AOIworld;
 static list<SyncPlyrIdData> s_pidList =
 {
@@ -25,7 +27,7 @@ static list<SyncPlyrIdData> s_pidList =
 	{2, "huaxia"},
 	{3, "ruxi"},
 	{4, "lingzifeng"},
-	{5, "dixxo"},
+	{5, "didiowhx"},
 	{6, "fanfan"},
 	{7, "TSY369"},
 	{8, "cuiqixian"},
@@ -38,10 +40,10 @@ static list<SyncPlyrIdData>::iterator s_pidListIt = s_pidList.begin();
 
 GameR::GameR()
 {
-	plyrPosData.X = 100;
+	plyrPosData.X = 140 + s_randEngne() % 30;
 	plyrPosData.Y = 0;
-	plyrPosData.Z = 100;
-	plyrPosData.V = 0;
+	plyrPosData.Z = 140 + s_randEngne() % 30;
+	plyrPosData.V = s_randEngne() % 360;
 	plyrPosData.bloodValue = 5;
 
 	if (s_pidList.end() != s_pidListIt)
