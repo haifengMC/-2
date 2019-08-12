@@ -108,7 +108,7 @@ bool GameR::Init()
 			PlyrData pd;
 
 			pd.plyrId = ((GameR*)p_plyr)->getPlyrId();
-			pd.usrName = ((GameR*)p_plyr)->getUsrName();
+			pd.usrName = ((GameR*)p_plyr)->getUsrName();		
 			pd.plyrPos.X = ((GameR*)p_plyr)->getPlyrPos().X;
 			pd.plyrPos.Y = ((GameR*)p_plyr)->getPlyrPos().Y;
 			pd.plyrPos.Z = ((GameR*)p_plyr)->getPlyrPos().Z;
