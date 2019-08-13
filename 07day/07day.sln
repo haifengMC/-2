@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01实现移动随机出生�
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02启动为守护进程", "02启动为守护进程\02启动为守护进程.vcxproj", "{A896515C-04EE-4100-AD7D-4774DD286588}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03实现延时自动退出", "03实现延时自动退出\03实现延时自动退出.vcxproj", "{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -51,6 +53,22 @@ Global
 		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|x64.Build.0 = Release|x64
 		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|x86.ActiveCfg = Release|x86
 		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|x86.Build.0 = Release|x86
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|ARM.ActiveCfg = Debug|ARM
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|ARM.Build.0 = Debug|ARM
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|ARM64.Build.0 = Debug|ARM64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|x64.ActiveCfg = Debug|x64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|x64.Build.0 = Debug|x64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|x86.ActiveCfg = Debug|x86
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Debug|x86.Build.0 = Debug|x86
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|ARM.ActiveCfg = Release|ARM
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|ARM.Build.0 = Release|ARM
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|ARM64.ActiveCfg = Release|ARM64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|ARM64.Build.0 = Release|ARM64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|x64.ActiveCfg = Release|x64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|x64.Build.0 = Release|x64
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|x86.ActiveCfg = Release|x86
+		{DB34EDB9-D5D6-4FE5-AFF7-1809ED420C58}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
