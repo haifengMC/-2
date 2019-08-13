@@ -6,6 +6,16 @@ AOIGrid::AOIGrid(const int& x, const int& y) : x(x), y(y)
 {
 }
 
+int & AOIGrid::getX()
+{
+	return x;
+}
+
+int & AOIGrid::getY()
+{
+	return y;
+}
+
 void AOIGrid::addObj(AOIObj * const & p_obj) const
 {
 	obj_list.push_back(p_obj);
@@ -119,6 +129,1064 @@ list<AOIGrid*> AOI::getSrdPlyrs(const AOIObj & plyr)
 	return ret;
 }
 
+void AOI::upDateSrdPlyrs(AOIObj& plyr, 
+	const float& x, const float& y,
+	list<AOIGrid*> &oldGridList,
+	list<AOIGrid*> &unaltGridList,
+	list<AOIGrid*> &newGridList)
+{
+	int oldX = getGridPosX(plyr.getX());
+	int oldY = getGridPosY(plyr.getY());
+	int newX = getGridPosX(x);
+	int newY = getGridPosY(y);
+	//cout << "old(" <<
+	//	plyr.getX() << "[" << oldX << "], " <<
+	//	plyr.getY() << "[" << oldY << "])" << endl;
+	//cout << "new(" <<
+	//	x << "[" << newX << "], " <<
+	//	y << "[" << newY << "])" << endl;
+
+	oldGridList.clear();
+	unaltGridList.clear();
+	newGridList.clear();
+	
+	if (oldX == newX && oldY == newY)
+	{
+		//cout << "oldX == newX && oldY == newY" << endl;
+		//cout << "old(" <<
+		//	plyr.getX() << "[" << oldX << "], " <<
+		//	plyr.getY() << "[" << oldY << "])" << endl;
+		//cout << "new(" <<
+		//	x << "[" << newX << "], " <<
+		//	y << "[" << newY << "])" << endl;
+		plyr.setXY(x, y);
+		unaltGridList = getSrdPlyrs(plyr);
+
+		return;
+	}
+
+	if (getAbs(newX - oldX) > 2 || getAbs(newY - oldY) > 2)
+	{
+		oldGridList = getSrdPlyrs(plyr);
+		delPlyr(plyr);
+		plyr.setXY(x, y);
+		addPlyr(plyr);
+		newGridList = getSrdPlyrs(plyr);
+
+		return;
+	}
+
+	/*
+			AOIGrid oldGridTemp(oldX, oldY);
+			AOIGrid oldGridTopTemp(oldX, oldY - 1);
+			AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+			AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+			AOIGrid oldGridRightTemp(oldX + 1, oldY);
+			AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+			AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+			AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+			AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+			AOIGrid newGridTemp(newX, newY);
+			AOIGrid newGridTopTemp(newX, newY - 1);
+			AOIGrid newGridBottomTemp(newX, newY + 1);
+			AOIGrid newGridLeftTemp(newX - 1, newY);
+			AOIGrid newGridRightTemp(newX + 1, newY);
+			AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+			AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+			AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+			AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+			if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+			if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+	
+	*/
+	delPlyr(plyr);
+	plyr.setXY(x, y);
+	addPlyr(plyr);
+	set<AOIGrid>::iterator grid_it;
+	switch (newX - oldX)
+	{
+	case -2:
+		{
+			switch (newY - oldY)
+			{
+			case -2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+				}
+				break;
+			case -1:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+				}
+				break;
+			case 0:
+				{
+				AOIGrid oldGridTemp(oldX, oldY);
+				AOIGrid oldGridTopTemp(oldX, oldY - 1);
+				AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+				AOIGrid oldGridRightTemp(oldX + 1, oldY);
+				AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+				AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+				AOIGrid newGridTemp(newX, newY);
+				AOIGrid newGridTopTemp(newX, newY - 1);
+				AOIGrid newGridBottomTemp(newX, newY + 1);
+				AOIGrid newGridLeftTemp(newX - 1, newY);
+				AOIGrid newGridRightTemp(newX + 1, newY);
+				AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+				AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+				AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+				AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 1:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				}
+				break;
+			case 2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				}
+				break;
+			default:
+				//cout << "error : " << newX - oldX << newY - oldY << endl;
+				break;
+			}
+		}
+		break;
+	case -1:
+		{
+			switch (newY - oldY)
+			{
+			case -2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case -1:
+				{
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 0:
+				{
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+				}
+				break;
+			case 1:
+				{
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			default:
+				cout << "error" << endl;
+				break;
+			}
+		}
+		break;
+	case 0:
+		{
+			switch (newY - oldY)
+			{
+			case -2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case -1:
+				{
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 1:
+				{
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			default:
+				cout << "error" << endl;
+				break;
+			}
+		}
+		break;
+	case 1:
+		{
+			switch (newY - oldY)
+			{
+			case -2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case -1:
+				{
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 0:
+				{
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 1:
+				{
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 2:
+				{
+				AOIGrid oldGridTemp(oldX, oldY);
+				AOIGrid oldGridTopTemp(oldX, oldY - 1);
+				AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+				AOIGrid oldGridRightTemp(oldX + 1, oldY);
+				AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+				AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+				AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+				AOIGrid newGridTemp(newX, newY);
+				AOIGrid newGridTopTemp(newX, newY - 1);
+				AOIGrid newGridBottomTemp(newX, newY + 1);
+				AOIGrid newGridLeftTemp(newX - 1, newY);
+				AOIGrid newGridRightTemp(newX + 1, newY);
+				AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+				AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+				AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+				AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+				if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			default:
+				cout << "error" << endl;
+				break;
+			}
+		}
+		break;
+	case 2:
+		{
+			switch (newY - oldY)
+			{
+			case -2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case -1:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+					AOIGrid oldGridBottomRightTemp(oldX + 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 0:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 1:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			case 2:
+				{
+					AOIGrid oldGridTemp(oldX, oldY);
+					AOIGrid oldGridTopTemp(oldX, oldY - 1);
+					AOIGrid oldGridBottomTemp(oldX, oldY + 1);
+					AOIGrid oldGridLeftTemp(oldX - 1, oldY);
+					AOIGrid oldGridRightTemp(oldX + 1, oldY);
+					AOIGrid oldGridTopLeftTemp(oldX - 1, oldY - 1);
+					AOIGrid oldGridTopRightTemp(oldX + 1, oldY - 1);
+					AOIGrid oldGridBottomLeftTemp(oldX - 1, oldY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridTopRightTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(oldGridBottomLeftTemp)))oldGridList.push_back((AOIGrid*)&*grid_it);
+
+					AOIGrid newGridTemp(newX, newY);
+					AOIGrid newGridTopTemp(newX, newY - 1);
+					AOIGrid newGridBottomTemp(newX, newY + 1);
+					AOIGrid newGridLeftTemp(newX - 1, newY);
+					AOIGrid newGridRightTemp(newX + 1, newY);
+					AOIGrid newGridTopLeftTemp(newX - 1, newY - 1);
+					AOIGrid newGridTopRightTemp(newX + 1, newY - 1);
+					AOIGrid newGridBottomLeftTemp(newX - 1, newY + 1);
+					AOIGrid newGridBottomRightTemp(newX + 1, newY + 1);
+
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopLeftTemp)))unaltGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridTopRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomLeftTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+					if (grid_set.end() != (grid_it = grid_set.find(newGridBottomRightTemp)))newGridList.push_back((AOIGrid*)&*grid_it);
+
+				}
+				break;
+			default:
+				cout << "error" << endl;
+				break;
+			}
+		}
+		break;
+	default:
+		cout << "error" << endl;
+		break;
+	}
+}
+
 void AOI::addPlyr(AOIObj & plyr)
 {
 	AOIGrid gridTemp(getGridPosX(plyr.getX()), getGridPosY(plyr.getY()));
@@ -156,4 +1224,7 @@ int AOI::getGridPosY(const float & y)
 	return y / gridSize;
 }
 
-
+int AOI::getAbs(const int & n)
+{
+	return n > 0 ? n : -n;
+}
