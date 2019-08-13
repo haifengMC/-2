@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.489
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01实现移动随机出生位置和随机姓名", "01实现移动随机出生位置和随机姓名\01实现移动随机出生位置和随机姓名.vcxproj", "{EFC0F1CD-0BAC-479B-8ACF-A4024A38D203}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02启动为守护进程", "02启动为守护进程\02启动为守护进程.vcxproj", "{A896515C-04EE-4100-AD7D-4774DD286588}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -33,6 +35,22 @@ Global
 		{EFC0F1CD-0BAC-479B-8ACF-A4024A38D203}.Release|x64.Build.0 = Release|x64
 		{EFC0F1CD-0BAC-479B-8ACF-A4024A38D203}.Release|x86.ActiveCfg = Release|x86
 		{EFC0F1CD-0BAC-479B-8ACF-A4024A38D203}.Release|x86.Build.0 = Release|x86
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|ARM.Build.0 = Debug|ARM
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|ARM64.Build.0 = Debug|ARM64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|x64.ActiveCfg = Debug|x64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|x64.Build.0 = Debug|x64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|x86.ActiveCfg = Debug|x86
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Debug|x86.Build.0 = Debug|x86
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|ARM.ActiveCfg = Release|ARM
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|ARM.Build.0 = Release|ARM
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|ARM64.ActiveCfg = Release|ARM64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|ARM64.Build.0 = Release|ARM64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|x64.ActiveCfg = Release|x64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|x64.Build.0 = Release|x64
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|x86.ActiveCfg = Release|x86
+		{A896515C-04EE-4100-AD7D-4774DD286588}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

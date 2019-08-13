@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{2768a069-e1c1-44bd-a55b-05e3753c0148}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2829b26c-66b7-41e0-a9ba-68fba4d59595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\channel">
+      <UniqueIdentifier>{13590c86-520a-4442-834a-ccbdb0826bd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\role">
+      <UniqueIdentifier>{9e25cceb-21f7-4a4f-94e8-1b1c30ece90c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\protocol">
+      <UniqueIdentifier>{4acbe51e-8295-4a1c-8e28-bfb2789ca647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\channel">
+      <UniqueIdentifier>{f2039781-ef4d-4884-a3fb-97592ec3cc3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\role">
+      <UniqueIdentifier>{44af4e89-c5a5-4a97-b183-55b4731e2b0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\protocol">
+      <UniqueIdentifier>{b5f572ba-b7d3-41fb-847a-c56082c7e969}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AOI.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\role\GameR.cpp">
+      <Filter>src\role</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameMsg.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameMsg.protoc.pb.cc">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameMsgData.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameMsgF.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameMsgList.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\GameP.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\channel\GameC.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\channel\GameCF.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\role\GameR.h">
+      <Filter>inc\role</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameMsg.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameMsg.protoc.pb.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameMsgData.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameMsgF.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameMsgList.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\GameP.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\channel\GameC.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\channel\GameCF.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\AOI.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
