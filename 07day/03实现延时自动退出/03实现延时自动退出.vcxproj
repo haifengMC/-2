@@ -84,6 +84,9 @@
     <ClCompile Include="src\AOI.cpp" />
     <ClCompile Include="src\channel\GameC.cpp" />
     <ClCompile Include="src\channel\GameCF.cpp" />
+    <ClCompile Include="src\channel\TimeoutC.cpp" />
+    <ClCompile Include="src\channel\TimeoutDispIC.cpp" />
+    <ClCompile Include="src\channel\TimeoutDispOC.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\protocol\GameMsg.cpp" />
     <ClCompile Include="src\protocol\GameMsg.protoc.pb.cc" />
@@ -91,19 +94,30 @@
     <ClCompile Include="src\protocol\GameMsgF.cpp" />
     <ClCompile Include="src\protocol\GameMsgList.cpp" />
     <ClCompile Include="src\protocol\GameP.cpp" />
+    <ClCompile Include="src\protocol\TimeoutDisprP.cpp" />
+    <ClCompile Include="src\protocol\TimeoutMsg.cpp" />
+    <ClCompile Include="src\protocol\TimeoutP.cpp" />
     <ClCompile Include="src\role\GameR.cpp" />
+    <ClCompile Include="src\role\TimeoutTaskR.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\AOI.h" />
     <ClInclude Include="inc\channel\GameC.h" />
     <ClInclude Include="inc\channel\GameCF.h" />
+    <ClInclude Include="inc\channel\TimeoutC.h" />
+    <ClInclude Include="inc\channel\TimeoutDispIC.h" />
+    <ClInclude Include="inc\channel\TimeoutDispOC.h" />
     <ClInclude Include="inc\protocol\GameMsg.h" />
     <ClInclude Include="inc\protocol\GameMsg.protoc.pb.h" />
     <ClInclude Include="inc\protocol\GameMsgData.h" />
     <ClInclude Include="inc\protocol\GameMsgF.h" />
     <ClInclude Include="inc\protocol\GameMsgList.h" />
     <ClInclude Include="inc\protocol\GameP.h" />
+    <ClInclude Include="inc\protocol\TimeoutDisprP.h" />
+    <ClInclude Include="inc\protocol\TimeoutMsg.h" />
+    <ClInclude Include="inc\protocol\TimeoutP.h" />
     <ClInclude Include="inc\role\GameR.h" />
+    <ClInclude Include="inc\role\TimeoutTaskR.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

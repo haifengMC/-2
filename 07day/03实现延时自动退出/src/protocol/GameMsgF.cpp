@@ -77,6 +77,8 @@ void ChatMsgF::getSerialization(GameMsgData * const & p_gameMsgData, string & se
 {
 	ChatData* p_chatData = dynamic_cast<ChatData*>(p_gameMsgData);
 	GameMsg::Chat* p_chatMsg = dynamic_cast<GameMsg::Chat*>(p_msg);
+	p_msg->Clear();
+
 	p_chatMsg->set_content(p_chatData->content);
 	p_chatMsg->SerializePartialToString(&serialization);
 }
@@ -108,6 +110,7 @@ void NewPosMsgF::getSerialization(GameMsgData * const & p_gameMsgData, string & 
 {
 	PlyrPosData* p_newPosData = dynamic_cast<PlyrPosData*>(p_gameMsgData);
 	GameMsg::PlyrPos* p_newPosMsg = dynamic_cast<GameMsg::PlyrPos*>(p_msg);
+	p_msg->Clear();
 	p_newPosMsg->set_x(p_newPosData->X);
 	p_newPosMsg->set_y(p_newPosData->Y);
 	p_newPosMsg->set_z(p_newPosData->Z);
@@ -122,7 +125,7 @@ void NewPosMsgF::getMsgData(const string & serialization, GameMsgData *& p_gameM
 	p_gameMsgData = new PlyrPosData;
 	PlyrPosData* p_plyrPosData = dynamic_cast<PlyrPosData*>(p_gameMsgData);
 	GameMsg::PlyrPos* p_plyrPosMsg = dynamic_cast<GameMsg::PlyrPos*>(p_msg);
-
+	
 	p_plyrPosMsg->ParseFromString(serialization);
 	p_plyrPosData->X = p_plyrPosMsg->x();
 	p_plyrPosData->Y = p_plyrPosMsg->y();
@@ -147,6 +150,7 @@ void BroadcastMsgF::getSerialization(GameMsgData * const & p_gameMsgData, string
 {
 	BroadCastData* p_broadcastData = dynamic_cast<BroadCastData*>(p_gameMsgData);
 	GameMsg::BroadCast* p_broadcastMsg = dynamic_cast<GameMsg::BroadCast*>(p_msg);
+	p_msg->Clear();
 	p_broadcastMsg->set_plyrid(p_broadcastData->plyrId);
 	p_broadcastMsg->set_bctype(p_broadcastData->bcType);
 	p_broadcastMsg->set_usrname(p_broadcastData->usrName);
@@ -196,7 +200,7 @@ void BroadcastMsgF::getMsgData(const string & serialization, GameMsgData *& p_ga
 	p_gameMsgData = new BroadCastData;
 	BroadCastData* p_broadcastData = dynamic_cast<BroadCastData*>(p_gameMsgData);
 	GameMsg::BroadCast* p_broadcastMsg = dynamic_cast<GameMsg::BroadCast*>(p_msg);
-
+	
 	p_broadcastMsg->ParseFromString(serialization);
 	p_broadcastData->plyrId = p_broadcastMsg->plyrid();
 	p_broadcastData->bcType = p_broadcastMsg->bctype();
@@ -256,7 +260,7 @@ void LogoutMsgF::getSerialization(GameMsgData * const & p_gameMsgData, string & 
 {
 	SyncPlyrIdData* p_logoutData = dynamic_cast<SyncPlyrIdData*>(p_gameMsgData);
 	GameMsg::SyncPlyrId* p_logoutMsg = dynamic_cast<GameMsg::SyncPlyrId*>(p_msg);
-
+	p_msg->Clear();
 	p_logoutMsg->set_plyrid(p_logoutData->plyrId);
 	p_logoutMsg->set_usrname(p_logoutData->usrName);
 

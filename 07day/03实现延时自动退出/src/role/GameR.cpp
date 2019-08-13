@@ -1,6 +1,8 @@
 #include "../../inc/role/GameR.h"
 #include "../../inc/protocol/GameMsgList.h"
 #include "../../inc/protocol/GameMsgF.h"
+#include "../../inc/role/TimeoutTaskR.h"
+#include "../../inc/protocol/TimeoutP.h"
 
 #include <iostream>
 #include <random>
@@ -39,6 +41,26 @@ static list<SyncPlyrIdData> s_pidList =
 };
 static list<SyncPlyrIdData>::iterator s_pidListIt = s_pidList.begin();
 
+
+class AutoExitR : public TimeoutTaskR
+{
+public:
+	AutoExitR() : TimeoutTaskR("autoExit", 5) {
+		cout << "AutoExitR()" << endl;
+	}
+	virtual ~AutoExitR() {}
+
+	virtual UserData * ProcMsg(UserData & _poUserData) override
+	{
+		cout << "procMsg" << endl;
+		ZinxKernel::Zinx_Exit();
+
+		return nullptr;
+	}
+private:
+
+};
+static Irole* ps_timeout = NULL;
 
 
 GameR::GameR()
@@ -133,6 +155,15 @@ bool GameR::Init()
 	p_sendGm = new GameMsg(MSG_TYPE_SRDPLYRS_POS, p_spd);
 	ZinxKernel::Zinx_SendOut(*p_sendGm, *p_gameP);
 	
+	if (0 == ZinxKernel::Zinx_GetAllRole().size())
+	{
+		if (nullptr != ps_timeout)
+		{
+			ZinxKernel::Zinx_Del_Role(*ps_timeout);
+			delete ps_timeout;
+			ps_timeout = NULL;
+		}
+	}
 				
 	return true;
 }
@@ -528,6 +559,12 @@ void GameR::Fini()
 	}
 
 	s_AOIworld.delPlyr(*this);
+
+	if (0 == ZinxKernel::Zinx_GetAllRole().size())
+	{
+		ps_timeout = new AutoExitR;
+		ZinxKernel::Zinx_Add_Role(*ps_timeout);
+	}
 }
 
 float & GameR::getX() const

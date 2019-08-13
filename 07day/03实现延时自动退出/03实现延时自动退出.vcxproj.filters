@@ -60,6 +60,27 @@
     <ClCompile Include="src\channel\GameCF.cpp">
       <Filter>src\channel</Filter>
     </ClCompile>
+    <ClCompile Include="src\channel\TimeoutC.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\channel\TimeoutDispIC.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\channel\TimeoutDispOC.cpp">
+      <Filter>src\channel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\TimeoutDisprP.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\TimeoutMsg.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol\TimeoutP.cpp">
+      <Filter>src\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="src\role\TimeoutTaskR.cpp">
+      <Filter>src\role</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\role\GameR.h">
@@ -91,6 +112,27 @@
     </ClInclude>
     <ClInclude Include="inc\channel\GameCF.h">
       <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\channel\TimeoutC.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\channel\TimeoutDispIC.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\channel\TimeoutDispOC.h">
+      <Filter>inc\channel</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\TimeoutDisprP.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\TimeoutMsg.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\protocol\TimeoutP.h">
+      <Filter>inc\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\role\TimeoutTaskR.h">
+      <Filter>inc\role</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
